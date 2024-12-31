@@ -3,32 +3,199 @@
 --// Copyright (c) 2024 Depso
 
 local ImGui = {
-	Animations = {
-		Buttons = {
+	Windows = {},
+	UIAssetId = 76246418997296,
+	DefaultTitle = "ImGui",
+	ScreenGuiName = "ImGui",
+
+	IsStudio = false,
+	DefaultParent = nil,
+	PrefabsFolder = nil,
+	
+	Animation = {
+		DefaultTweenInfo = TweenInfo.new(0.1)
+	}
+}
+
+ImGui.Acent = {
+	Light = Color3.fromRGB(66, 150, 250),
+	Dark = Color3.fromRGB(41, 75, 121),
+	White = Color3.fromRGB(255, 255, 255),
+	Gray = Color3.fromRGB(127, 126, 129),
+}
+
+ImGui.Colors = {
+	WindowBg = Color3.fromRGB(0, 16, 24),
+	Border = Color3.fromRGB(135, 135, 148),
+	Title = ImGui.Acent.White,
+	ToolBarBg = Color3.fromRGB(36, 36, 36),
+	TabText = Color3.fromRGB(200, 200, 200),
+	TabBg = ImGui.Acent.Light,
+	ResizeGrab = ImGui.Acent.Light,
+
+	--// Elements
+	Labels = ImGui.Acent.White,
+	ButtonsBg = ImGui.Acent.Light,
+	ButtonsText = ImGui.Acent.White,
+	CheckBoxBg = ImGui.Acent.Dark,
+	CollapsingHeaderBg = ImGui.Acent.Light,
+	CollapsingHeaderText = ImGui.Acent.Light,
+	RadioButtonSelectedBg = ImGui.Acent.Gray,
+	CheckboxBg = ImGui.Acent.Dark,
+	CheckboxTick = ImGui.Acent.Light,
+
+	DeselectedTitleBarBG = Color3.fromRGB(0, 0, 0),
+	DeselectedTitleBarTrans = 0.7,
+	SelectedTitleBar = ImGui.Acent.Dark,
+	SelectedTitleBarTrans = 0,
+	BorderSelectedTrans = 0,
+	BorderDeselectedTrans = 0.7
+}
+
+ImGui.ColoringData = {
+	["Label"] = {
+		TextColor3 = "Labels"
+	},
+	["Title"] = {
+		TextColor3 = "Title"
+	},
+	["TitleBar"] = {
+		BackgroundColor3 = "TitleBg"
+	},
+	["Border"] = {
+		Color = "Border"
+	},
+	["Window"] = {
+		BackgroundColor3 = "WindowBg"
+	},
+	["Toolbar"] = {
+		BackgroundColor3 = "ToolBarBg"
+	},
+	["Tab"] = {
+		TextColor3 = "TabText",
+		BackgroundColor3 = "TabBg"
+	},
+	["ResizeGrab"] = {
+		TextColor3 = "ResizeGrab"
+	},
+	["DeselectedTitleBar"] = {
+		BackgroundColor3 = "DeselectedTitleBarBG",
+		BackgroundTransparency = "DeselectedTitleBarTrans"
+	},
+	["SelectedTitleBar"] = {
+		BackgroundColor3 = "SelectedTitleBar",
+		BackgroundTransparency = "SelectedTitleBarTrans"
+	},
+	["BorderSelected"] = {
+		Transparency = "BorderSelectedTrans"
+	},
+	["BorderDeselected"] = {
+		Transparency = "BorderDeselectedTrans"
+	},
+	["CollapsingHeader"] = {
+		BackgroundColor3 = "CollapsingHeaderBg",
+	},
+	["CollapsingHeaderText"] = {
+		BackgroundColor3 = "CollapsingHeaderText",
+	},
+	["Button"] = {
+		BackgroundColor3 = "ButtonsBg",
+		TextColor3 = "ButtonsText",
+	},
+	["RadioButton"] = {
+		BackgroundColor3 = "RadioButtonSelectedBg",
+	},
+	["Checkbox"] = {
+		BackgroundColor3 = "CheckboxBg",
+	},
+	["CheckboxTick"] = {
+		ImageColor3 = "CheckboxTick",
+		BackgroundColor3 = "CheckboxTick",
+	}
+}
+
+ImGui.Styles = {
+	RadioButton = {
+		Animations = {
+			"RadioButtons"
+		},
+		CornerRadius = UDim.new(1, 0),
+	},
+	Button = {
+		Animations = {
+			"Buttons"
+		},
+	},
+	CollapsingHeader = {
+		Animations = {
+			"Buttons"
+		},
+	},
+	TreeNode = {
+		Animations = {
+			"TransparentButtons"
+		},
+	}
+}
+
+ImGui.Animations = {
+	["Buttons"] = {
+		Connections = {
 			MouseEnter = {
 				BackgroundTransparency = 0.5,
 			},
 			MouseLeave = {
 				BackgroundTransparency = 0.7,
-			} 
+			}
 		},
-		Tabs = {
+		Init = "MouseLeave"
+	},
+	["TransparentButtons"] = {
+		Connections = {
 			MouseEnter = {
 				BackgroundTransparency = 0.5,
 			},
 			MouseLeave = {
 				BackgroundTransparency = 1,
-			} 
+			}
 		},
-		Inputs = {
+		Init = "MouseLeave"
+	},
+	["RadioButtons"] = {
+		Connections = {
+			MouseEnter = {
+				BackgroundTransparency = 0.5,
+			},
+			MouseLeave = {
+				BackgroundTransparency = 1,
+			}
+		},
+		Init = "MouseLeave"
+	},
+	["Tabs"] = {
+		Connections = {
+			MouseEnter = {
+				BackgroundTransparency = 0.6,
+			},
+			MouseLeave = {
+				BackgroundTransparency = 1,
+			},
+		},
+		Init = "MouseLeave"
+	},
+	["Inputs"] = {
+		Connections = {
 			MouseEnter = {
 				BackgroundTransparency = 0,
 			},
 			MouseLeave = {
 				BackgroundTransparency = 0.5,
-			} 
+			},
 		},
-		WindowBorder = {
+		Init = "MouseLeave"
+	},
+	["Border"] = {
+		Connections = {
 			Selected = {
 				Transparency = 0,
 				Thickness = 1
@@ -38,274 +205,515 @@ local ImGui = {
 				Thickness = 1
 			}
 		},
+		Init = "Selected"
 	},
-
-	Windows = {},
-	Animation = TweenInfo.new(0.1),
-	UIAssetId = "rbxassetid://76246418997296"
 }
 
+ImGui.Properties = {
+	{
+		Aliases = {"ElementStyle"},
+		Callback = function<StyleFunc>(Object, Data, Value)
+			ImGui:ApplyStyle(Object, Value)
+		end,
+	},
+	 {
+	 	Aliases = {"ColorTag"},
+		Callback = function<StyleFunc>(Object, Data, Value)
+			local WindowClass = Data.WindowClass
+			local Colors = WindowClass.Colors
+			
+			ImGui:UpdateColors({
+				Object = Object,
+				Tag = Value,
+				Animate = false,
+				Colors = Colors,
+			})
+	 	end,
+	 },
+	{
+		Aliases = {"Animations"},
+		Callback = function<StyleFunc>(Object, Data, Value)
+			local Class = Data.Class
+			local NoAnimation = Class.NoAnimation
+			if NoAnimation then return end
 
---// Universal functions
-local NullFunction = function() end
-local CloneRef = cloneref or function(_)return _ end
-local function GetService(...): ServiceProvider
-	return CloneRef(game:GetService(...))
+			ImGui:ApplyAnimationsFromNames({
+				Object = Object,
+				Names = Value
+			})
+		end,
+	},
+	{
+		Aliases = {"Icon", "IconSize"},
+		Callback = function<StyleFunc>(Object, Data, Value)
+			local Icon = Object:FindFirstChild("Icon")
+			if not Icon then return end 
+			
+			local Class = Data.Class
+			local IconSize = Class.IconSize
+			local Image = Class.Icon
+
+			Icon.Visible = Value and true
+			Icon.Image = Image or ""
+
+			if IconSize then
+				Icon.Size = IconSize
+			end
+		end,
+	},
+	{
+		Aliases = {"BorderThickness", "Border"},
+		Callback = function<StyleFunc>(Object, Data, Value)
+			local Class = Data.Class
+			local Enabled = Class.Border ~= false
+			local Thickness = Class.BorderThickness
+			
+			local Stroke = ImGui:GetChildOfClass(Object, "UIStroke")
+			Stroke.Thickness = Thickness or (Enabled and 1 or 0)
+			Stroke.Enabled = Enabled
+		end,
+	},
+	{
+		Aliases = {"Ratio"},
+		Callback = function<StyleFunc>(Object, Data, Value)
+			local AspectRatio = Value.Ratio or 4/3
+			local Axis = Value.Axis or Enum.DominantAxis.Height
+			local AspectType = Value.AspectType or Enum.AspectType.ScaleWithParentSize
+
+			local Ratio = ImGui:GetChildOfClass(Object, "UIAspectRatioConstraint")
+			Ratio.DominantAxis = Axis
+			Ratio.AspectType = AspectType
+			Ratio.AspectRatio = AspectRatio
+		end,
+	},
+	{
+		Recursive = true,
+		Aliases = {"CornerRadius"},
+		Callback = function<StyleFunc>(Object, Data, Value)
+			local UICorner = ImGui:GetChildOfClass(Object, "UICorner")
+			UICorner.CornerRadius = Value
+		end,
+	},
+	{
+		Aliases = {"Label"},
+		Callback = function<StyleFunc>(Object, Data, Value)
+			local Label = Object:FindFirstChild("Label")
+			if not Label then return end
+			
+			local Class = Data.Class
+			
+			function Class:SetLabel(Text)
+				Label.Text = Text
+				return Class
+			end
+			Label.Text = Value
+		end,
+	},
+	{
+		Aliases = {"NoGradient"},
+		LibraryAliases = {"NoGradientAll"},
+		Callback = function<StyleFunc>(Object, Data, Value)
+			local UIGradient = Object:FindFirstChildOfClass("UIGradient")
+			if not UIGradient then return end
+			UIGradient.Enabled = Value
+		end,
+	},
+	{
+		Aliases = {"Callback"},
+		Callback = function<StyleFunc>(Object, Data)
+			local Class = Data.Class
+			function Class:SetCallback(NewCallback)
+				Class.Callback = NewCallback
+				return Class
+			end
+			function Class:FireCallback(NewCallback)
+				Class.Callback(Object)
+				return Class
+			end
+		end,
+	},
+	{
+		Aliases = {"Value"},
+		Callback = function<StyleFunc>(Object, Data)
+			local Class = Data.Class
+			function Class:GetValue()
+				return Class.Value
+			end
+		end,
+	}
+}
+
+--// Compatibility 
+local EmptyFunction = function() end
+local GetHiddenUI = get_hidden_gui or gethui
+local CloneRef = cloneref or function(Ins): Instance 
+	return Ins 
 end
 
-function ImGui:Warn(...)
-	if self.NoWarnings then return end
-	return warn("[IMGUI]", ...)
-end
+--// Service handlers
+local Services = setmetatable({}, {
+	__index = function(self, Name)
+		local Service = game:GetService(Name)
+		return CloneRef(Service)
+	end,
+})
 
---// Services 
-local TweenService: TweenService = GetService("TweenService")
-local UserInputService: UserInputService = GetService("UserInputService")
-local Players: Players = GetService("Players")
-local CoreGui = GetService("CoreGui")
-local RunService: RunService = GetService("RunService")
+--// Core functions 
+--// Services
+local RunService: RunService = Services.RunService
+local Players: Players = Services.Players
+local CoreGui = Services.CoreGui
+local UserInputService = Services.UserInputService
+local TweenService = Services.TweenService
 
---// LocalPlayer
+--// Local player
 local LocalPlayer = Players.LocalPlayer
-local PlayerGui = LocalPlayer.PlayerGui
-local Mouse = LocalPlayer:GetMouse()
 
---// ImGui Config
-local IsStudio = RunService:IsStudio()
-ImGui.NoWarnings = not IsStudio
+ImGui.PlayerGui = LocalPlayer.PlayerGui
+ImGui.IsStudio = ImGui.IsStudio or RunService:IsStudio()
 
---// Prefabs
-function ImGui:FetchUI()
-	--// Cache check 
-	local CacheName = "DepsoImGui"
-	if _G[CacheName] then
-		self:Warn("Prefabs loaded from Cache")
-		return _G[CacheName]
+function Merge(Base, New)
+	if not New then return end
+	for Key, Value in next, New do
+		Base[Key] = Value
 	end
-
-	local UI = nil
-
-	--// Universal
-	if not IsStudio then
-		local UIAssetId = ImGui.UIAssetId
-		UI = game:GetObjects(UIAssetId)[1]
-	else --// Studio
-		local UIName = "DepsoImGui"
-		UI = PlayerGui:FindFirstChild(UIName) or script.DepsoImGui
-	end
-
-	_G[CacheName] = UI
-	return UI
 end
 
-local UI = ImGui:FetchUI()
-local Prefabs = UI.Prefabs
-ImGui.Prefabs = Prefabs
-Prefabs.Visible = false
+local function NewClass(Base)
+	Base.__index = Base
+	return setmetatable({}, Base)
+end
 
---// Styles
-local AddionalStyles = {
-	[{
-		Name="Border"
-	}] = function(GuiObject: GuiObject, Value, Class)
-		local Outline = GuiObject:FindFirstChildOfClass("UIStroke")
-		if not Outline then return end
+function ImGui:Init()
+	self.DefaultParent = self:GetParent()
+	self.PrefabsFolder = self:InsertPrefabs()
 
-		local BorderThickness = Class.BorderThickness
-		if BorderThickness then
-			Outline.Thickness = BorderThickness
-		end
+	--self.FullScreenGui = ImGui:CreateInstance("ScreenGui", GuiParent, {
+	--	DisplayOrder = 99999,
+	--	ResetOnSpawn = false,
+	--	ScreenInsets = Enum.ScreenInsets.None
+	--})
+end
 
-		Outline.Enabled = Value
-	end,
+--// Animation Service
+local Animation = ImGui.Animation
 
-	[{
-		Name="Ratio"
-	}] = function(GuiObject: GuiObject, Value, Class)
-		local RatioAxis = Class.RatioAxis or "Height"
-		local AspectRatio = Class.Ratio or 4/3
-		local AspectType = Class.AspectType or Enum.AspectType.ScaleWithParentSize
-
-		local Ratio = GuiObject:FindFirstChildOfClass("UIAspectRatioConstraint")
-		if not Ratio then
-			Ratio = ImGui:CreateInstance("UIAspectRatioConstraint", GuiObject)
-		end
-
-		Ratio.DominantAxis = Enum.DominantAxis[RatioAxis]
-		Ratio.AspectType = AspectType
-		Ratio.AspectRatio = AspectRatio
-	end,
-
-	[{
-		Name="CornerRadius",
-		Recursive=true
-	}] = function(GuiObject: GuiObject, Value, Class)
-		local UICorner = GuiObject:FindFirstChildOfClass("UICorner")
-		if not UICorner then
-			UICorner = ImGui:CreateInstance("UICorner", GuiObject)
-		end
-
-		UICorner.CornerRadius = Class.CornerRadius
-	end,
-
-	[{
-		Name="Label"
-	}] = function(GuiObject: GuiObject, Value, Class)
-		local Label = GuiObject:FindFirstChild("Label")
-		if not Label then return end
-
-		Label.Text = Class.Label
-		function Class:SetLabel(Text)
-			Label.Text = Text
-			return Class
-		end
-	end,
-
-	[{
-		Name="NoGradient",
-		Aliases = {"NoGradientAll"},
-		Recursive=true
-	}] = function(GuiObject: GuiObject, Value, Class)
-		local UIGradient = GuiObject:FindFirstChildOfClass("UIGradient")
-		if not UIGradient then return end
-		UIGradient.Enabled = not Value
-	end,
-
-	--// Addional functions for classes
-	[{
-		Name="Callback"
-	}] = function(GuiObject: GuiObject, Value, Class)
-		function Class:SetCallback(NewCallback)
-			Class.Callback = NewCallback
-			return Class
-		end
-		function Class:FireCallback(NewCallback)
-			return Class.Callback(GuiObject)
-		end
-	end,
-
-	[{
-		Name="Value"
-	}] = function(GuiObject: GuiObject, Value, Class)
-		function Class:GetValue()
-			return Class.Value
-		end
-	end,
+type AnimationTween = {
+	Object: Instance,
+	NoAnimation: boolean?,
+	Tweeninfo: TweenInfo?,
+	EndProperites: {}
 }
+function Animation:Tween(Data: AnimationTween): Tween
+	local DefaultTweenInfo = self.DefaultTweenInfo
 
-function ImGui:GetName(Name: string)
-	local Format = "%s_"
-	return Format:format(Name)
+	local Object = Data.Object
+	local NoAnimation = Data.NoAnimation
+	local Tweeninfo = Data.Tweeninfo or DefaultTweenInfo
+	local EndProperites = Data.EndProperites
+
+	local Sucess, Tween = pcall(function()
+		return TweenService:Create(Object, Tweeninfo, EndProperites)
+	end)
+	
+	if not Sucess then
+		warn("Tween failed for", Object)
+		warn("Type:", typeof(Object))
+		warn("Props:", EndProperites)
+		
+		error(Tween)
+	end
+	
+	Tween:Play()
+
+	return Tween
 end
 
-function ImGui:CreateInstance(Class, Parent, Properties)
-	local Instance = Instance.new(Class, Parent)
-	for Key, Value in next, Properties or {} do
-		Instance[Key] = Value
+type Animate = {
+	NoAnimation: boolean?,
+	Objects: {},
+	Tweeninfo: TweenInfo?
+}
+function Animation:Animate(Data): Tween
+	local NoAnimation = Data.NoAnimation
+	local Objects = Data.Objects
+	local Tweeninfo = Data.Tweeninfo
+	local BaseTween = nil
+
+	for Object, EndProperites in next, Objects do
+		local Tween = self:Tween({
+			NoAnimation = NoAnimation,
+			Object = Object,
+			Tweeninfo = Tweeninfo, 
+			EndProperites = EndProperites
+		})
+
+		if not BaseTween then
+			BaseTween = Tween
+		end
 	end
+
+	return BaseTween
+end
+
+type HeaderCollapse = {
+	Open: boolean,
+	ClosedSize: UDim2,
+	OpenSize: UDim2,
+	Toggle: Instace,
+	Resize: Instance,
+	Hide: Instance,
+	NoAnimation: boolean,
+	NoAutomaticSize: boolean
+}
+function Animation:HeaderCollapse(Data: HeaderCollapse): Tween
+	--// Check configuation
+	ImGui:CheckConfig(Data, {
+		IconRotations = {
+			Open = 90,
+			Closed = 0
+		}
+	})
+
+	--// Unpack config
+	local Open = Data.Open
+	local ClosedSize = Data.ClosedSize
+	local OpenSize: UDim2 = Data.OpenSize
+	local Toggle = Data.Toggle
+	local Resize = Data.Resize
+	local Hide = Data.Hide
+	local NoAnimation = Data.NoAnimation
+	local NoAutomaticSize = Data.NoAutomaticSize
+	local Rotations = Data.IconRotations
+
+	local Rotation = Open and Rotations.Open or Rotations.Closed
+
+	--// Disable AutomaticSize
+	if not NoAutomaticSize then
+		Resize.AutomaticSize = Enum.AutomaticSize.None
+	end
+
+	--// Reset AutomaticSize after animation
+	local function Completed()
+		if not Open then return end
+
+		Resize.Size = OpenSize
+
+		if not NoAutomaticSize then
+			Resize.AutomaticSize = Enum.AutomaticSize.Y
+		end
+	end
+
+	--// Build and play animation keyframes
+	local Tween = self:Animate({
+		NoAnimation = NoAnimation,
+		Objects = {
+			[Toggle] = {
+				Rotation = Rotation,
+			},
+			[Resize] = {
+				Size = Open and OpenSize or ClosedSize
+			},
+			--[Hide] = {
+			--	Visible = Open,
+			--}
+		}
+	})
+
+	--// Connect events
+	Tween.Completed:Connect(Completed)
+
+	return Tween
+end
+
+function ImGui:InsertPrefabs(): Folder
+	local IsStudio = self.IsStudio
+	local PlayerGui = self.PlayerGui
+	local UIAssetId = self.UIAssetId
+
+	--// Studio | PlayerGui or Script
+	if IsStudio then
+		local Name = "Depso-ImGui-Prefabs"
+		local ScriptUi = script:FindFirstChild(Name)
+		return ScriptUi or PlayerGui:WaitForChild(Name, 10) 
+	end
+
+	--// Other | Import asset
+	local AssetPath = `rbxassetid://{UIAssetId}`
+	return self:GetObjects(AssetPath)
+end
+
+function ImGui:GetParent(): GuiObject
+	local DefaultParent = self.DefaultParent
+	local PlayerGui = self.PlayerGui
+	local Name = self.ScreenGuiName
+
+	--// Force overwrite
+	if DefaultParent then
+		return DefaultParent
+	end
+
+	--// Detection prevention steps for Executors
+	local Steps = {
+		[1] = function()
+			return GetHiddenUI()
+		end,
+		[2] = function()
+			return CoreGui:FindFirstChild('RobloxGui')
+		end,
+		[3] = function()
+			return Instance.new("ScreenGui", CoreGui), true
+		end,
+		[4] = function()
+			return Instance.new("ScreenGui", PlayerGui), true
+		end,
+	}
+
+	--// Test each step for a successful parent
+	for _, CreateFunc in next, Steps do
+		local Success, Parent, ChangeName = pcall(CreateFunc)
+
+		if not Success then continue end
+		if not Parent then continue end
+
+		--// Change ScreenGUI name
+		if ChangeName then
+			Parent.Name = Name
+		end
+
+		return Parent
+	end
+
+	return warn("No default parent for UIs!")
+end
+
+function ImGui:CheckConfig(Source, Base)
+	for Key, Value in next, Base do
+		if Source[Key] == nil then
+			Source[Key] = Value
+		end
+	end
+	return Source
+end
+
+function ImGui:CreateInstance(Class, Parent, Properties): Instance
+	local Instance = Instance.new(Class, Parent)
+	Merge(Instance, Properties)
+
 	return Instance
 end
 
-function ImGui:ApplyColors(ColorOverwrites, GuiObject: GuiObject, ElementType: string)
-	for Info, Value in next, ColorOverwrites do
-		local Key = Info
-		local Recursive = false
+type UpdateColors = {
+	Config: Instance,
+	Tag: string,
+	Animate: boolean?,
+}
+function ImGui:UpdateColors(Config)
+	local ColoringData = self.ColoringData
+	local DefaultColors = self.Colors
+	
+	--// Unpack config
+	local Object = Config.Object
+	local Tag = Config.Tag
+	local Animate = Config.Animate
+	local Colors = Config.Colors or DefaultColors
+	
+	local Coloring = ColoringData[Tag]
+	local Properties = {}
+	
+	--// Check if coloring data exists
+	if not Coloring then return end
 
-		if typeof(Info) == "table" then
-			Key = Info.Name or ""
-			Recursive = Info.Recursive or false
-		end
+	--// Add coloring data to properties
+	for Key, Name in next, Coloring do
+		local Color = Colors[Name] or DefaultColors[Name]
+		if not Color then continue end
 
-		--// Child object
-		if typeof(Value) == "table" then
-			local Element = GuiObject:FindFirstChild(Key, Recursive)
+		Properties[Key] = Color
+	end
 
-			if not Element then 
-				if ElementType == "Window" then
-					Element = GuiObject.Content:FindFirstChild(Key, Recursive)
-					if not Element then continue end
-				else 
-					warn(Key, "was not found in", GuiObject)
-					warn("Table:", Value)
+	--// Tween new properties
+	Animation:Tween({
+		Object = Object,
+		NoAnimation = Animate,
+		EndProperites = Properties
+	})
+end
 
-					continue
-				end
-			end
+function ImGui:MultiUpdateColors(Config)
+	local Objects = Config.Objects
+	local Animate = Config.Animate
+	local Colors = Config.Colors
 
-			ImGui:ApplyColors(Value, Element)
-			continue
-		end
-
-		--// Set property
-		GuiObject[Key] = Value
+	for Object, Tag in next, Objects do
+		self:UpdateColors({
+			Object = Object,
+			Tag = Tag,
+			Animate = Animate,
+			Colors = Colors,
+		})
 	end
 end
 
-function ImGui:CheckStyles(GuiObject: GuiObject, Class, Colors)
-	--// Addional styles
-	for Info, Callback in next, AddionalStyles do
-		local Value = Class[Info.Name]
-		local Aliases = Info.Aliases
+function ImGui:ApplyStyle(Object: GuiObject, StyleName: string)
+	local Styles = self.Styles
+	local Animations = self.Animations
 
-		if Aliases and not Value then
-			for _, Alias in Info.Aliases do
-				Value = Class[Alias]
-				if Value then break end
-			end
-		end
-		if Value == nil then continue end
+	local Style = Styles[StyleName]
+	if not Style then return end
 
-		--// Stylise children
-		Callback(GuiObject, Value, Class)
-		if Info.Recursive then
-			for _, Child in next, GuiObject:GetChildren() do
-				Callback(Child, Value, Class)
-			end
-		end
-	end
+	self:ApplyProperties({
+		Object = Object,
+		Class = Style
+	})
+end
 
-	--// Label functions/Styliser
-	local ElementType = GuiObject.Name
-	GuiObject.Name = self:GetName(ElementType)
+function ImGui:ApplyAnimationsFromNames(Config)
+	local Animations = self.Animations
 
-	--// Apply Colors
-	local Colors = Colors or {}
-	local ColorOverwrites = Colors[ElementType]
+	local Names = Config.Names
+	local Object = Config.Object
 
-	if ColorOverwrites then
-		ImGui:ApplyColors(ColorOverwrites, GuiObject, ElementType)
-	end
-
-	--// Set properties
-	for Key, Value in next, Class do
-		pcall(function() --// If the property does not exist
-			GuiObject[Key] = Value
-		end)
+	for _, Name: string in next, Names do
+		self:ApplyAnimation(Object, Name)
 	end
 end
 
-function ImGui:MergeMetatables(Class, Instance: GuiObject)
+function ImGui:MergeMetatables(Class, Object: GuiObject)
 	local Metadata = {}
-	Metadata.__index = function(self, Key)
-		local suc, Value = pcall(function()
-			local Value = Instance[Key]
-			if typeof(Value) == "function" then
-				return function(...)
-					return Value(Instance, ...)
-				end
+
+	Metadata.__index = function(self, Key: string)
+		--// Fetch value from class
+		local Value = Class[Key]
+		if Value then return Value end
+
+		--// Fetch value from Object
+		Value = Object[Key]
+
+		--// Patch 'self'
+		if typeof(Value) == "function" then
+			return function(_, ...)
+				return Value(Object, ...)
 			end
-			return Value
-		end)
-		return suc and Value or Class[Key]
+		end
+
+		return Value
 	end
 
-	Metadata.__newindex = function(self, Key, Value)
-		local Key2 = Class[Key]
-		if Key2 ~= nil or typeof(Value) == "function" then
+	Metadata.__newindex = function(self, Key: string, Value)
+		local IsClassValue = Class[Key] or typeof(Value) == "function"
+
+		if IsClassValue then
 			Class[Key] = Value
-		else
-			Instance[Key] = Value
+			return
 		end
+
+		xpcall(function()
+			Object[Key] = Value
+		end, function(err)
+			warn(`Newindex Error: {Object}.{Key} = {Value}\n{err}`)
+			Class[Key] = Value
+		end)
 	end
 
 	return setmetatable({}, Metadata)
@@ -319,1054 +727,1374 @@ function ImGui:Concat(Table, Separator: " ")
 	return Concatenated
 end
 
-function ImGui:ContainerClass(Frame: Frame, Class, Window)
-	local ContainerClass = Class or {}
-	local WindowConfig = ImGui.Windows[Window]
-
-	function ContainerClass:NewInstance(Instance: Frame, Class, Parent)
-		--// Config
-		Class = Class or {}
-
-		--// Set Parent
-		Instance.Parent = Parent or Frame
-		Instance.Visible = true
-
-		--// TODO
-		if WindowConfig.NoGradientAll then
-			Class.NoGradient = true
+function ImGui:GetValueFromAliases(Aliases, Table)
+	for _, Alias: string in Aliases do
+		local Value = Table[Alias]
+		if Value then
+			return Value
 		end
-
-		local Colors = WindowConfig.Colors
-		ImGui:CheckStyles(Instance, Class, Colors)
-
-		--// External callback check
-		if Class.NewInstanceCallback then
-			Class.NewInstanceCallback(Instance)
-		end
-
-		--// Merge the class with the properties of the instance
-		return ImGui:MergeMetatables(Class, Instance)
 	end
+end
 
-	function ContainerClass:Button(Config)
-		Config = Config or {}
-		local Button = Prefabs.Button:Clone()
-		local ObjectClass = self:NewInstance(Button, Config)
+export type ApplyProperties = {
+	Object: Instance,
+	Class: table,
+	WindowClass: table?
+}
+function ImGui:ApplyProperties(Config: ApplyProperties)
+	local Properties = self.Properties
+	
+	--// Unpack config
+	local Object = Config.Object
+	local Class = Config.Class
+	local WindowClass = Config.WindowClass
 
-		local function Callback(...)
-			local func = Config.Callback or NullFunction
-			return func(ObjectClass, ...)
+	--// Set base properties
+	self:SetProperties(Object, Class)
+
+	--// Check for callbacks
+	for _, Style in next, Properties do
+		local Aliases = Style.Aliases
+		local Callback = Style.Callback
+
+		local Value = self:GetValueFromAliases(Aliases, Class)
+
+		if Value and Value ~= "None" then
+			Callback(Object, Config, Value)
 		end
-		Button.Activated:Connect(Callback)
-
-		--// Apply animations
-		ImGui:ApplyAnimations(Button, "Buttons")
-		return ObjectClass
 	end
+end
 
-	function ContainerClass:Image(Config)
-		Config = Config or {}
-		local Image = Prefabs.Image:Clone()
+--// Container class
+local Elements = {}
+Elements.__index = Elements
 
-		--// Check for rbxassetid
-		if tonumber(Config.Image) then
-			Config.Image = `rbxassetid://{Config.Image}`
+type WrapCreation = {
+	Defaults: table,
+	Canvas: table,
+	Function: (table, ...any) -> (Instance|table)
+}
+function ImGui:WrapCreation(Config: WrapCreation)
+	local Defaults = Config.Defaults
+	local Canvas = Config.Canvas -- (SELF)
+	local Function = Config.Function
+	local Elements = Config.Elements
+	local WindowClass = Config.WindowClass
+
+	return function(_, Config, ...)
+		--// Create Config
+		local Config = Config or {}
+		self:CheckConfig(Config, Defaults)
+
+		--// Create element and apply properties
+		local Class, Element = Function(Canvas, Config, ...)
+		
+		--// Some elements may return the instance without a class
+		if Element == nil then
+			Element = Class
 		end
 
-		local ObjectClass = self:NewInstance(Image, Config)
-		local function Callback(...)
-			local func = Config.Callback or NullFunction
-			return func(ObjectClass, ...)
-		end
-		Image.Activated:Connect(Callback)
-
-		--// Apply animations
-		ImGui:ApplyAnimations(Image, "Buttons")
-		return ObjectClass
-	end
-
-	function ContainerClass:ScrollingBox(Config)
-		Config = Config or {}
-		local Box = Prefabs.ScrollBox:Clone()
-		local ContainClass = ImGui:ContainerClass(Box, Config, Window) 
-		return self:NewInstance(Box, ContainClass)
-	end
-
-	function ContainerClass:Label(Config)
-		Config = Config or {}
-		local Label = Prefabs.Label:Clone()
-		return self:NewInstance(Label, Config)
-	end
-
-	function ContainerClass:Checkbox(Config)
-		Config = Config or {}
-		local IsRadio = Config.IsRadio
-
-		local CheckBox = Prefabs.CheckBox:Clone()
-		local Tickbox: ImageButton = CheckBox.Tickbox
-		local Tick: ImageLabel = Tickbox.Tick
-		local Label = CheckBox.Label
-		local ObjectClass = self:NewInstance(CheckBox, Config)
-
-		--// Stylise to correct type
-		if IsRadio then
-			Tick.ImageTransparency = 1
-			Tick.BackgroundTransparency = 0
-		else
-			Tickbox:FindFirstChildOfClass("UIPadding"):Remove()
-			Tickbox:FindFirstChildOfClass("UICorner"):Remove()
-		end
-
-		--// Apply animations
-		ImGui:ApplyAnimations(CheckBox, "Buttons", Tickbox)
-
-		local Value = Config.Value or false
-
-		--// Callback
-		local function Callback(...)
-			local func = Config.Callback or NullFunction
-			return func(ObjectClass, ...)
-		end
-
-		function Config:SetTicked(NewValue: boolean, NoAnimation: false)
-			Value = NewValue
-			Config.Value = Value
-
-			--// Animations
-			local Size = Value and UDim2.fromScale(1,1) or UDim2.fromScale(0,0)
-			ImGui:Tween(Tick, {
-				Size = Size
-			}, nil, NoAnimation)
-			ImGui:Tween(Label, {
-				TextTransparency = Value and 0 or 0.3
-			}, nil, NoAnimation)
-
-			--// Fire callback
-			Callback(Value)
+		--// Add to elements dict
+		if Elements then
+			local ColorTag = Config.ColorTag
+			local ToColor = Config.ToColor
 			
-			return Config
-		end
-		Config:SetTicked(Value, true)
-
-		function Config:Toggle()
-			Config:SetTicked(not Value)
-			return Config
-		end
-
-		--// Connect functions
-		local function Clicked()
-			Value = not Value
-			Config:SetTicked(Value)
-		end
-		CheckBox.Activated:Connect(Clicked)
-		Tickbox.Activated:Connect(Clicked)
-
-		return ObjectClass
-	end
-
-	function ContainerClass:RadioButton(Config)
-		Config = Config or {}
-		Config.IsRadio = true
-		return self:Checkbox(Config)
-	end
-
-	function ContainerClass:Viewport(Config)
-		Config = Config or {}
-		local Model = Config.Model
-
-		local Holder = Prefabs.Viewport:Clone()
-		local Viewport: ViewportFrame = Holder.Viewport
-		local WorldModel: WorldModel = Viewport.WorldModel
-		Config.WorldModel = WorldModel
-		Config.Viewport = Viewport
-
-		function Config:SetCamera(Camera)
-			Viewport.CurrentCamera = Camera
-			Config.Camera = Camera
-			Camera.CFrame = CFrame.new(0,0,0)
-			return Config
-		end
-
-		local Camera = Config.Camera or ImGui:CreateInstance("Camera", Viewport)
-		Config:SetCamera(Camera)
-
-		function Config:SetModel(Model: Model, PivotTo: CFrame)
-			WorldModel:ClearAllChildren()
-
-			--// Set new model
-			if Config.Clone then
-				Model = Model:Clone()
+			if ToColor then
+				Merge(Elements, ToColor)
+			elseif typeof(Element) == "Instance" then
+				Elements[Element] = ColorTag
 			end
-			if PivotTo then
-				Model:PivotTo(PivotTo)
-			end
-
-			Model.Parent = WorldModel
-			Config.Model = Model
-			return Model
-		end
-
-		--// Set model
-		if Model then
-			Config:SetModel(Model)
-		end
-
-		local ContainClass = ImGui:ContainerClass(Holder, Config, Window) 
-		return self:NewInstance(Holder, ContainClass)
-	end
-
-	function ContainerClass:InputText(Config)
-		Config = Config or {}
-		local TextInput = Prefabs.TextInput:Clone()
-		local TextBox: TextBox = TextInput.Input
-		local ObjectClass = self:NewInstance(TextInput, Config)
-
-		TextBox.Text = Config.Value or ""
-		TextBox.PlaceholderText = Config.PlaceHolder
-		TextBox.MultiLine = Config.MultiLine == true
-
-		--// Apply animations
-		ImGui:ApplyAnimations(TextInput, "Inputs")
-
-		local function Callback(...)
-			local func = Config.Callback or NullFunction
-			return func(ObjectClass, ...)
-		end
-		TextBox:GetPropertyChangedSignal("Text"):Connect(function()
-			local Value = TextBox.Text
-			Config.Value = Value
-			return Callback(Value)
-		end)
-
-		function Config:SetValue(Text)
-			TextBox.Text = tostring(Text)
-			Config.Value = Text
-			return Config
-		end
-
-		function Config:Clear()
-			TextBox.Text = ""
-			return Config
-		end
-
-		return ObjectClass
-	end
-
-	function ContainerClass:InputTextMultiline(Config)
-		Config = Config or {}
-		Config.Label = ""
-		Config.Size = UDim2.new(1, 0, 0, 38)
-		Config.MultiLine = true
-		return ContainerClass:InputText(Config)
-	end
-
-	function ContainerClass:GetRemainingHeight()
-		local Padding = Frame:FindFirstChildOfClass("UIPadding")
-		local UIListLayout = Frame:FindFirstChildOfClass("UIListLayout")
-
-		local LayoutPaddding = UIListLayout.Padding
-		local PaddingTop = Padding.PaddingTop
-		local PaddingBottom = Padding.PaddingBottom
-
-		local PaddingSizeY = PaddingTop+PaddingBottom+LayoutPaddding
-		local OccupiedY = Frame.AbsoluteSize.Y+PaddingSizeY.Offset+3
-
-		return UDim2.new(1, 0, 1, -OccupiedY) 
-	end
-
-	function ContainerClass:Console(Config)
-		Config = Config or {}
-		local Console: ScrollingFrame = Prefabs.Console:Clone()
-		local Source: TextBox = Console.Source
-		local Lines = Console.Lines
-
-		if Config.Fill then
-			Console.Size = ContainerClass:GetRemainingHeight()
-		end
-
-		--// Set values from config
-		Source.TextEditable = Config.ReadOnly ~= true
-		Source.Text = Config.Text or ""
-		Source.TextWrapped = Config.TextWrapped == true
-		Source.RichText = Config.RichText == true
-		Lines.Visible = Config.LineNumbers == true
-
-		function Config:UpdateLineNumbers()
-			if not Config.LineNumbers then return end
-
-			local LinesCount = #Source.Text:split("\n")
-			local Format = Config.LinesFormat or "%s"
-
-			--// Update lines text
-			Lines.Text = ""
-			for i = 1, LinesCount do
-				Lines.Text ..= `{Format:format(i)}{i ~= LinesCount and '\n' or ''}`
-			end
-
-			Source.Size = UDim2.new(1, -Lines.AbsoluteSize.X, 0, 0)
-			return Config
-		end
-
-		function Config:UpdateScroll()
-			local CanvasSizeY = Console.AbsoluteCanvasSize.Y
-			Console.CanvasPosition = Vector2.new(0, CanvasSizeY)
-			return Config
-		end
-
-		function Config:SetText(Text)
-			if not Config.Enabled then return end
-			Source.Text = Text
-			Config:UpdateLineNumbers()
-			return Config
 		end
 		
-		function Config:GetValue()
-			return Source.Text
-		end
-
-		function Config:Clear(Text)
-			Source.Text = ""
-			Config:UpdateLineNumbers()
-			return Config
-		end
-
-		function Config:AppendText(...)
-			if not Config.Enabled then return end
-			
-			local MaxLines = Config.MaxLines or 100
-			local NewString = "\n" .. ImGui:Concat({...}, " ") 
-			
-			Source.Text ..= NewString
-			Config:UpdateLineNumbers()
-
-			if Config.AutoScroll then
-				Config:UpdateScroll()
-			end
-
-			local Lines = Source.Text:split("\n")
-			if #Lines > MaxLines then
-				Source.Text = Source.Text:sub(#Lines[1]+2)
-			end
-			return Config
-		end
-
-		--// Connect events
-		Source.Changed:Connect(Config.UpdateLineNumbers)
-
-		return self:NewInstance(Console, Config)
-	end
-
-	function ContainerClass:Table(Config)
-		Config = Config or {}
-		local Table: Frame = Prefabs.Table:Clone()
-		local TableChildCount = #Table:GetChildren() --// Performance
-
-		--// Configure Table style
-		if Config.Fill then
-			Table.Size = ContainerClass:GetRemainingHeight()
-		end
-		local RowName = "Row"
-
-		local RowsCount = 0
-		function Config:CreateRow()
-			local RowClass = {}
-
-			local Row: Frame = Table.RowTemp:Clone()
-			local UIListLayout = Row:FindFirstChildOfClass("UIListLayout")
-			UIListLayout.VerticalAlignment = Enum.VerticalAlignment[Config.Align or "Center"]
-
-			local RowChildCount = #Row:GetChildren() --// Performance
-			Row.Name = RowName
-			Row.Visible = true
-
-			--// Background colors
-			if Config.RowBackground then
-				Row.BackgroundTransparency = RowsCount % 2 == 1 and 0.92 or 1
-			end
-
-			function RowClass:CreateColumn(CConfig)
-				CConfig = CConfig or {}
-				local Column: Frame = Row.ColumnTemp:Clone()
-				Column.Visible = true
-				Column.Name = "Column"
-
-				local Stroke = Column:FindFirstChildOfClass("UIStroke")
-				Stroke.Enabled = Config.Border ~= false
-
-				local ContainClass = ImGui:ContainerClass(Column, CConfig, Window) 
-				return ContainerClass:NewInstance(Column, ContainClass, Row)
-			end
-
-			function RowClass:UpdateColumns()
-				if not Row or not Table then return end
-				local Columns = Row:GetChildren()
-				local RowsCount = #Columns - RowChildCount
-
-				for _, Column: Frame in next, Columns do
-					if not Column:IsA("Frame") then continue end
-					Column.Size = UDim2.new(1/RowsCount, 0, 0, 0)
-				end
-				return RowClass
-			end
-			Row.ChildAdded:Connect(RowClass.UpdateColumns)
-			Row.ChildRemoved:Connect(RowClass.UpdateColumns)
-
-			RowsCount += 1
-			return ContainerClass:NewInstance(Row, RowClass, Table)
-		end
-
-		function Config:UpdateRows()
-			local Rows = Table:GetChildren()
-			local PaddingY = Table.UIListLayout.Padding.Offset + 2
-			local RowsCount = #Rows - TableChildCount
-
-			for _, Row: Frame in next, Rows do
-				if not Row:IsA("Frame") then continue end
-				Row.Size = UDim2.new(1, 0, 1/RowsCount, -PaddingY)
-			end
-			return Config
-		end
-
-		if Config.RowsFill then
-			Table.AutomaticSize = Enum.AutomaticSize.None
-			Table.ChildAdded:Connect(Config.UpdateRows)
-			Table.ChildRemoved:Connect(Config.UpdateRows)
-		end
-
-		function Config:ClearRows()
-			RowsCount = 0
-			local PostRowName = ImGui:GetName(RowName)
-			for _, Row: Frame in next, Table:GetChildren() do
-				if not Row:IsA("Frame") then continue end
-
-				if Row.Name == PostRowName then
-					Row:Remove()
-				end
-			end
-			return Config
-		end
-
-		return self:NewInstance(Table, Config) 
-	end
-
-	function ContainerClass:Grid(Config)
-		Config = Config or {}
-		Config.Grid = true
-
-		return self:Table(Config)
-	end
-
-	function ContainerClass:CollapsingHeader(Config)
-		Config = Config or {}
-		local Title = Config.Title or ""
-		Config.Name = Title
-
-		local Header = Prefabs.CollapsingHeader:Clone()
-		local Titlebar: TextButton = Header.TitleBar
-		local Container: Frame = Header.ChildContainer
-		Titlebar.Title.Text = Title
-
-		--// Apply animations
-		if Config.IsTree then
-			ImGui:ApplyAnimations(Titlebar, "Tabs")
-		else
-			ImGui:ApplyAnimations(Titlebar, "Buttons")
-		end
-
-		--// Open Animations
-		function Config:SetOpen(Open)
-			local Animate = Config.NoAnimation ~= true
-			Config.Open = Open
-			ImGui:HeaderAnimate(Header, Animate, Open, Titlebar)
-			return self
-		end
-
-		--// Toggle
-		local ToggleButton = Titlebar.Toggle.ToggleButton
-		local function Toggle()
-			Config:SetOpen(not Config.Open)
-		end
-		Titlebar.Activated:Connect(Toggle)
-		ToggleButton.Activated:Connect(Toggle)
-
-		--// Custom toggle image
-		if Config.Image then
-			ToggleButton.Image = Config.Image 
-		end
-
-		--// Open
-		Config:SetOpen(Config.Open or false)
-
-		local ContainClass = ImGui:ContainerClass(Container, Config, Window) 
-		return self:NewInstance(Header, ContainClass)
-	end
-
-	function ContainerClass:TreeNode(Config)
-		Config = Config or {}
-		Config.IsTree = true
-		return self:CollapsingHeader(Config)
-	end
-
-	function ContainerClass:Separator(Config)
-		Config = Config or {}
-		local Separator = Prefabs.SeparatorText:Clone()
-		local HeaderLabel = Separator.TextLabel
-		HeaderLabel.Text = Config.Text or ""
-
-		if not Config.Text then
-			HeaderLabel.Visible = false
-		end
-
-		return self:NewInstance(Separator, Config)
-	end
-
-	function ContainerClass:Row(Config)
-		Config = Config or {}
-		local Row: Frame = Prefabs.Row:Clone()
-		local UIListLayout = Row:FindFirstChildOfClass("UIListLayout")
-		local UIPadding = Row:FindFirstChildOfClass("UIPadding")
-
-		if Config.Spacing then
-			UIListLayout.Padding = UDim.new(0, Config.Spacing)
-		end
-
-		function Config:Fill()
-			local Children = Row:GetChildren()
-			local Rows = #Children - 2 --// -UIListLayout + UIPadding
-
-			--// Change layout
-			local Padding = UIListLayout.Padding.Offset * 2
-			UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
-
-			--// Apply correct margins
-			UIPadding.PaddingLeft = UIListLayout.Padding
-			UIPadding.PaddingRight = UIListLayout.Padding
-
-			for _, Child: Instance in next, Children do
-				local YScale = 0
-				if Child:IsA("ImageButton") then
-					YScale = 1
-				end
-				pcall(function()
-					Child.Size = UDim2.new(1/Rows, -Padding, YScale, 0)
-				end)
-			end
-			return Config
-		end
-
-		local ContainClass = ImGui:ContainerClass(Row, Config, Window) 
-		return self:NewInstance(Row, ContainClass)
-	end
-
-	--TODO
-	-- Vertical 
-	-- :SetPercentage
-	function ContainerClass:Slider(Config)
-		Config = Config or {}
-		local Value = Config.Value or 0
-		local ValueFormat = Config.Format or "%.d"
-		Config.Name = Config.Label or ""
-
-		local Slider: TextButton = Prefabs.Slider:Clone()
-		local UIPadding = Slider:FindFirstChildOfClass("UIPadding")
-		local Grab: Frame = Slider.Grab
-		local ValueText = Slider.ValueText
-		local ObjectClass = self:NewInstance(Slider, Config)
-
-		local function Callback(...)
-			local func = Config.Callback or NullFunction
-			return func(ObjectClass, ...)
-		end
-
-		--// Apply Progress styles
-		if Config.Progress then
-			local UIGradient = Grab:FindFirstChildOfClass("UIGradient")
-			local Label = Slider.Label
-
-			local PaddingSides = UDim.new(0,2)
-			local Diff = UIPadding.PaddingLeft - PaddingSides
-
-			Grab.AnchorPoint = Vector2.new(0, 0.5)
-			UIGradient.Enabled = true
-
-			UIPadding.PaddingLeft = PaddingSides
-			UIPadding.PaddingRight = PaddingSides
-
-			Label.Position = UDim2.new(1, 15-Diff.Offset, 0, 0)
-		end
-
-		function Config:SetValue(Value: number, Slider: false)
-			local MinValue = Config.MinValue
-			local MaxValue = Config.MaxValue
-			local Differnce = MaxValue - MinValue
-			local Percentage = Value/MaxValue
-
-			if Slider then
-				Percentage = Value
-				Value = MinValue + (Differnce * Percentage)
-			else
-				Value = tonumber(Value)
-			end
-
-			--// Animate grab
-			local Props = {
-				Position = UDim2.fromScale(Percentage, 0.5)
-			}
-
-			if Config.Progress then
-				Props = {
-					Size = UDim2.fromScale(Percentage, 1)
-				}
-			end
-
-			ImGui:Tween(Grab, Props)
-
-			Config.Value = Value
-			ValueText.Text = ValueFormat:format(Value, MaxValue) 
-
-			Callback(Value)
-			return Config
-		end
-		Config:SetValue(Value)
-
-		local Dragging = false
-		local MouseMoveConnection = nil
-
-		local function MouseMove()
-			if Config.ReadOnly then return end
-			if not Dragging then return end
-			local MouseX = UserInputService:GetMouseLocation().X
-			local LeftPos = Slider.AbsolutePosition.X
-
-			local Percentage = (MouseX-LeftPos)/Slider.AbsoluteSize.X
-			Percentage = math.clamp(Percentage, 0, 1)
-			Config:SetValue(Percentage, true)
-		end
-
-		--// Connect mouse events
-		local SliderHovered = ImGui:ConnectHover({
-			Parent = Slider,
-			OnInput = function(MouseHovering, Input)
-				if not MouseHovering then return end
-				if Input.UserInputType == Enum.UserInputType.MouseButton1 then
-					Dragging = true
-
-					--// Save heavy performance
-					MouseMoveConnection = Mouse.Move:Connect(MouseMove)
-				end
-			end
+		--// If automatic properties are disallowed
+		if Element == false then return Class end
+
+		self:ApplyProperties({
+			Object = Element,
+			Class = Config,
+			WindowClass = WindowClass
 		})
 
-		Slider.Activated:Connect(MouseMove)
+		return Class
+	end
+end
 
-		UserInputService.InputEnded:Connect(function(inputObject)
-			if not Dragging then return end
-			if inputObject.UserInputType == Enum.UserInputType.MouseButton1 then
-				Dragging = false
-				MouseMoveConnection:Disconnect()
+type MakeCanvas = {
+	Element: Instance,
+	Window: WindowClass,
+	Class: {}
+}
+function ImGui:MakeCanvas(Config: MakeCanvas)
+	local Element = Config.Element
+	local WindowClass = Config.Window
+	local Class = Config.Class
+
+	--// Create new canvas class
+	local Canvas = NewClass(Elements)
+	Canvas.Element = Element
+	Canvas.WindowClass = WindowClass
+
+	--// Elements dict
+	local Elements
+	if WindowClass then
+		Elements = WindowClass.Elements
+	end
+
+	--// Create metatable merge
+	local Meta = {
+		__index = function(_, Key: string)
+			--// Check class for value
+			local Func = Canvas[Key]
+
+			--// Return property from Class or Instance
+			if not Func then
+				local ClassValue = Class[Key]
+				if ClassValue ~= nil then return ClassValue end
+
+				return Element[Key]
 			end
+
+			--// Create element function wrap
+			return self:WrapCreation({
+				Defaults = {
+					Visible = true,
+					Parent = Element,
+					ColorTag = Key,
+					ElementStyle = Key
+				},
+				WindowClass = WindowClass,
+				Elements = Elements,
+				Canvas = Canvas,
+				Function = Func,
+			})
+		end,
+		__newindex = function(self, Key: string, Value)
+			local IsTableValue = Class[Key] ~= nil
+
+			--// Update key value
+			if IsTableValue then
+				Class[Key] = Value
+			else
+				Element[Key] = Value
+			end
+		end,
+	}
+
+	return setmetatable({}, Meta)
+end
+
+function ImGui:SetProperties(Object: Instance, Properties)
+	for Key: string, Value in next, Properties do
+		pcall(function()
+			Object[Key] = Value
 		end)
+	end
+end
 
-		return ObjectClass
+function ImGui:InsertPrefab(Name: string, Properties): Instance
+	local Folder = ImGui.PrefabsFolder
+	local Prefabs = Folder.Prefabs
+	local Element = Prefabs:WaitForChild(Name)
+	local New = Element:Clone()
+
+	self:SetProperties(New, Properties)
+
+	return New
+end
+
+function ImGui:GetContentSize(Object: GuiObject): Vector2
+	local UIListLayout = Object:FindFirstChildOfClass("UIListLayout")
+	local UIPadding = Object:FindFirstChildOfClass("UIPadding")
+	
+	local ContentSize
+	
+	--// Fetch absolute size
+	if UIListLayout then
+		ContentSize = UIListLayout.AbsoluteContentSize
+	else
+		ContentSize = Object.AbsoluteSize
+	end
+	
+	--// Apply padding
+	if UIPadding then
+		local Top = UIPadding.PaddingTop.Offset
+		local Bottom = UIPadding.PaddingBottom.Offset
+		
+		local Left = UIPadding.PaddingLeft.Offset
+		local Right = UIPadding.PaddingRight.Offset
+		
+		ContentSize += Vector2.new(Left+Right, Top+Bottom)
+	end
+	
+	return ContentSize
+end
+
+function Elements:GetRemainingHeight(): UDim2
+	local Parent = self.Element
+	local Occupied = ImGui:GetContentSize(Parent)
+	
+	print(Occupied)
+
+	return UDim2.new(1, 0, 1, -Occupied.Y)
+end
+
+type Button = {
+	Callback: ((...any) -> unknown)?
+}
+function Elements:Button(Config: Button): Button
+	local Object = ImGui:InsertPrefab("Button", Config)
+	local Class = ImGui:MergeMetatables(Config, Object)
+
+	Object.Activated:Connect(function(...)
+		local Func = Config.Callback or EmptyFunction
+		return Func(Class, ...)
+	end)
+
+	return Class, Object
+end
+
+type Image = {
+	Image: (string|number),
+	Callback: ((...any) -> unknown)?
+}
+function Elements:Image(Config: Image): Image
+	local Image = Config.Image or ""
+	Config.ElementStyle = "Button"
+	
+	--// Convert Id number to asset URL
+	if tonumber(Image) then
+		Config.Image = `rbxassetid://{Image}`
+	end
+	
+	local Object = ImGui:InsertPrefab("Image", Config)
+	local Class = ImGui:MergeMetatables(Config, Object)
+
+	Object.Activated:Connect(function(...)
+		local Func = Config.Callback or EmptyFunction
+		return Func(Class, ...)
+	end)
+
+	return Object
+end
+
+function Elements:ScrollingBox(Config)
+	local Object = ImGui:InsertPrefab("ScrollBox", Config)
+	local Class = ImGui:MergeMetatables(Config, Object)
+	return Class
+end
+
+export type Label = {
+	Bold: boolean?,
+	Italic: boolean?,
+	Font: string?
+}
+function Elements:Label(Config: Label): GuiObject
+	local IsBold = Config.Bold
+	local IsItalic = Config.Italic
+	local FontName = Config.Font
+
+	--// Weghts
+	local Medium = Enum.FontWeight.Medium
+	local Bold = Enum.FontWeight.Bold
+
+	--// Styles
+	local Normal = Enum.FontStyle.Normal
+	local Italic = Enum.FontStyle.Italic
+
+	local Weight = IsBold and Bold or Medium
+	local Style = IsItalic and Italic or Normal
+	local Name = FontName or "Inconsolata"
+
+	--// Create label
+	local Object = ImGui:InsertPrefab("Label", Config)
+	Object.FontFace = Font.fromName(Name, Weight, Style)
+
+	return Object
+end
+
+function Elements:RadioButton(Config): GuiObject
+	local Object = ImGui:InsertPrefab("RadioButton", Config)
+
+	Object.Activated:Connect(function(...)
+		local Callback = Config.Callback or EmptyFunction
+		return Callback(Object, ...)
+	end)
+
+	return Object
+end
+
+type Checkbox = {
+	IsRadio: boolean?,
+	Value: boolean,
+	NoAnimation: boolean?,
+	Callback: ((...any) -> unknown)?,
+	SetTicked: (self: Checkbox, Value: boolean, NoAnimation: boolean) -> ...any,
+	Toggle: (self: Checkbox) -> ...any,
+}
+function Elements:Checkbox(Config: Checkbox): Checkbox
+	ImGui:CheckConfig(Config, {
+		IsRadio = false,
+		Value = false,
+		TickedImageSize = UDim2.fromScale(1,1),
+		UntickedImageSize = UDim2.fromScale(0,0),
+		Callback = EmptyFunction
+	})
+	
+	--// Unpack configuation
+	local IsRadio = Config.IsRadio
+	local Value = Config.Value
+	local TickedSize = Config.TickedImageSize
+	local UntickedSize = Config.UntickedImageSize
+	
+	--// Check checkbox object
+	local Object = ImGui:InsertPrefab("CheckBox", Config)
+	local Class = ImGui:MergeMetatables(Config, Object)
+
+	local Label = Object.Label
+	local Tickbox = Object.Tickbox
+	local Tick = Tickbox.Tick
+	
+	local UIPadding = Tickbox:FindFirstChildOfClass("UIPadding")
+	local UICorner = Tickbox:FindFirstChildOfClass("UICorner")
+	
+	Config.ToColor = {
+		[Tickbox] = "Checkbox",
+		[Tick] = "CheckboxTick",
+	}
+
+	--// Stylise to correct type
+	if IsRadio then
+		Tick.ImageTransparency = 1
+		Tick.BackgroundTransparency = 0
+	else
+		UIPadding:Remove()
+		UICorner:Remove()
 	end
 
-	function ContainerClass:ProgressSlider(Config)
-		Config = Config or {}
-		Config.Progress = true
-		return self:Slider(Config)
+	--// Callback
+	local function Callback(...)
+		local func = Config.Callback
+		return func(Class, ...)
 	end
 
-	function ContainerClass:ProgressBar(Config)
-		Config = Config or {}
-		Config.Progress = true
-		Config.ReadOnly = true
-		Config.MinValue = 0
-		Config.MaxValue = 100
-		Config.Format = "% i%%"
-		Config = self:Slider(Config)
+	function Config:SetTicked(Value: boolean, NoAnimation: boolean)
+		local Size = Value and TickedSize or UntickedSize
 
-		function Config:SetPercentage(Value: number)
-			Config:SetValue(Value)
+		self.Value = Value
+		
+		----// Animate
+		--// Animate tick
+		Animation:Tween({
+			Object = Tick,
+			NoAnimation = NoAnimation,
+			EndProperites = {
+				Size = Size
+			}
+		})
+		--// Animate text
+		Animation:Tween({
+			Object = Label,
+			NoAnimation = NoAnimation,
+			EndProperites = {
+				TextTransparency = Value and 0 or 0.3
+			}
+		})
+		
+		--// Fire callback
+		Callback(Value)
+
+		return self
+	end
+	
+	function Config:Toggle()
+		local Value = not self.Value
+		self.Value = Value
+		self:SetTicked(Value)
+
+		return self
+	end
+
+	--// Connect functions
+	local function Clicked()
+		Config:Toggle()
+	end
+	
+	--// Connect events
+	Object.Activated:Connect(Clicked)
+	Tickbox.Activated:Connect(Clicked)
+	
+	--// Update UI
+	Config:SetTicked(Value, true)
+
+	return Class, Object
+end
+
+function Elements:Radiobox(Config: Checkbox): Checkbox
+	Config.IsRadio = true
+	return self:Checkbox(Config)
+end
+
+type Viewport = {
+	Model: Instance,
+	WorldModel: WorldModel?,
+	Viewport: ViewportFrame?,
+	Camera: Camera?,
+	Clone: boolean?,
+
+	SetCamera: (self: Viewport, Camera: Camera) -> Viewport,
+	SetModel: (self: Viewport, Model: Model, PivotTo: CFrame?) -> Model,
+}
+function Elements:Viewport(Config: Viewport): Viewport
+	local Object = ImGui:InsertPrefab("Viewport", Config)
+	local Class = ImGui:MergeMetatables(Config, Object)
+
+	local Viewport = Object.Viewport
+	local WorldModel = Viewport.WorldModel
+
+	local Model = Config.Model
+	local Camera = Config.Camera or ImGui:CreateInstance("Camera", Viewport)
+
+	Config.Camera = Camera
+	Config.WorldModel = WorldModel
+	Config.Viewport = Viewport
+
+	function Config:SetCamera(Camera)
+		Camera.CFrame = CFrame.new(0,0,0)
+
+		Viewport.CurrentCamera = Camera
+		self.Camera = Camera
+
+		return self
+	end
+
+	function Config:SetModel(Model: Model, PivotTo: CFrame?)
+		local CreateClone = self.Clone
+
+		WorldModel:ClearAllChildren()
+
+		--// Set new model
+		if CreateClone then
+			Model = Model:Clone()
 		end
+		if PivotTo then
+			Model:PivotTo(PivotTo)
+		end
+
+		Model.Parent = WorldModel
+		self.Model = Model
+
+		return Model
+	end
+
+	--// Set model
+	if Model then
+		Config:SetModel(Model)
+	end
+
+	Config:SetCamera(Camera)
+
+	return Class
+end
+
+type InputText = {
+	Value: string,
+	PlaceHolder: string?,
+	MultiLine: boolean?,
+	Label: string?,
+	Callback: ((string, ...any) -> unknown)?,
+	Clear: (InputText) -> InputText,
+	SetValue: (InputText, Value: string) -> InputText,
+}
+function Elements:InputText(Config: InputText): InputText
+	ImGui:CheckConfig(Config, {
+		Value = "",
+		PlaceHolder = "Type here",
+		Callback = EmptyFunction,
+		MultiLine = false,
+	})
+	
+	local Value = Config.Value
+	local MultiLine = Config.MultiLine
+	local PlaceHolder = Config.PlaceHolder
+	
+	--// Create Text input object
+	local Object = ImGui:InsertPrefab("TextInput", Config)
+	local Class = ImGui:MergeMetatables(Config, Object)
+
+	local TextBox: TextBox = Object.Input
+	TextBox.PlaceholderText = PlaceHolder
+	TextBox.MultiLine = MultiLine
+
+	local function Callback(...)
+		local Func = Config.Callback
+		Func(Class, ...)
+	end
+
+	function Config:SetValue(Value)
+		TextBox.Text = tostring(Value)
+		self.Value = Value
+		return Config
+	end
+	
+	function Config:Clear()
+		TextBox.Text = ""
+		return Config
+	end
+	
+	local function Changed()
+		local Value = TextBox.Text
+		Config.Value = Value
+		Callback(Value)
+	end
+
+	--// Connect events
+	TextBox:GetPropertyChangedSignal("Text"):Connect(Changed)
+
+	return Object, Class
+end
+
+function Elements:InputTextMultiline(Config)
+	Config.Label = ""
+	Config.Size = UDim2.new(1, 0, 0, 38)
+	Config.MultiLine = true
+	return self:InputText(Config)
+end
+
+type Console = {
+	Enabled: boolean?,
+	ReadOnly: boolean?,
+	Text: string?,
+	RichText: boolean?,
+	TextWrapped: boolean?,
+	LineNumbers: boolean?,
+	Fill: boolean,
+	AutoScroll: boolean,
+	LinesFormat: string,
+	MaxLines: number,
+
+	UpdateLineNumbers: (Console) -> Console,
+	UpdateScroll: (Console) -> Console,
+	SetText: (Console, Value: string) -> Console,
+	GetValue: (Console) -> string,
+	Clear: (Console) -> Console,
+	AppendText: (Console, ...string) -> Console,
+	CheckLineCount: (Console) -> Console,
+}
+function Elements:Console(Config: Console): Console
+	ImGui:CheckConfig(Config, {
+		Enabled = true,
+		ReadOnly = false,
+		Text = "",
+		TextWrapped = false,
+		RichText = false,
+		LineNumbers = false,
+		Fill = false,
+		LinesFormat = "%s",
+		MaxLines = 100,
+	})
+	
+	--// Unpack configuation
+	local ReadOnly = Config.ReadOnly
+	local LineNumbers = Config.LineNumbers
+	local Fill = Config.Fill
+	
+	local RemainingHeight = self:GetRemainingHeight()
+	
+	--// Create console object
+	local Object = ImGui:InsertPrefab("Console", Config)
+	local Class = ImGui:MergeMetatables(Config, Object)
+
+	local Source: TextBox = Object.Source
+	local Lines = Object.Lines
+	
+	Lines.Visible = LineNumbers
+	Source.TextEditable = not ReadOnly
+
+	--// Expand element size to fill
+	if Fill then
+		Object.Size = RemainingHeight
+	end
+
+	function Config:UpdateLineNumbers()
+		--// Configuation
+		local LineNumbers = self.LineNumbers
+		local Format = self.LinesFormat 
+		
+		--// If line counts are disabled
+		if not LineNumbers then return end
+
+		local LinesCount = #Source.Text:split("\n")
+
+		--// Update lines text
+		Lines.Text = ""
+		for Line = 1, LinesCount do
+			local Text = Format:format(Line)
+			local End = Line ~= LinesCount and '\n' or ''
+			
+			Lines.Text ..= `{Text}{End}`
+		end
+		
+		--// Update console size to fit line numbers
+		local LinesWidth = Lines.AbsoluteSize.X
+		Source.Size = UDim2.new(1, -LinesWidth, 0, 0)
+		
+		return self
+	end
+	
+	function Config:CheckLineCount()
+		--// Configuation
+		local MaxLines = Config.MaxLines
+		
+		local Text = Source.Text
+		local Lines = Text:split("\n")
+		
+		--// Cut beginning
+		if #Lines > MaxLines then
+			local Cropped = Text:sub(#Lines[1])
+			Source.Text = `{Cropped}\n`
+		end
+
+		return self
+	end
+
+	function Config:UpdateScroll()
+		local CanvasSize = Object.AbsoluteCanvasSize
+		Object.CanvasPosition = Vector2.new(0, CanvasSize.Y)
+		return self
+	end
+
+	function Config:SetText(Text: string?)
+		if not self.Enabled then return end
+		
+		Source.Text = tostring(Text)
+		self:UpdateLineNumbers()
+		
+		return self
+	end
+
+	function Config:GetValue()
+		return Source.Text
+	end
+
+	function Config:Clear()
+		Source.Text = ""
+		self:UpdateLineNumbers()
+		return self
+	end
+
+	function Config:AppendText(...)
+		--// Configuation
+		local Enabled = Config.Enabled
+		if not Enabled then return end
+
+		local NewString = "\n" .. ImGui:Concat({...}, " ") 
+
+		--// Append string
+		Source.Text ..= NewString
+
+		--// Check if content needs to be cut
+		self:CheckLineCount()
+		
+		Config:Update()
+
+		return self
+	end
+	
+	function Config.Update()
+		--// Configuation
+		local AutoScroll = Config.AutoScroll
+
+		if AutoScroll then
+			Config:UpdateScroll()
+		end
+		
+		Config:UpdateLineNumbers()
+	end
+
+	--// Connect events
+	Source:GetPropertyChangedSignal("Text"):Connect(Config.Update)
+
+	return Class, Object
+end
+
+type Table = {
+	Fill: boolean?,
+	Align: string?,
+	Border: boolean?,
+	RowsFill: boolean?,
+	Grid: boolean?,
+	RowBackground: boolean?,
+
+	CreateRow: (Table) -> unknown,
+	UpdateRows: (Table) -> unknown,
+	ClearRows: (Table) -> unknown,
+}
+function Elements:Table(Config: Table): Table
+	ImGui:CheckConfig(Config, {
+		Align = "Center",
+		Fill = false,
+		RowBackground = true,
+		RowBackgroundTransparency = 0.9,
+		Border = false,
+		RowsFill = false,
+	})
+	
+	local Window = self.WindowClass
+	
+	--// Unpack configuation
+	local Align = Config.Align
+	local RowBackground = Config.RowBackground
+	local Fill = Config.Fill
+	local RowTransparency = Config.BackgroundTransparency
+	local Border = Config.Border
+	local RowsFill = Config.RowsFill
+	
+	--// Create table object
+	local Object = ImGui:InsertPrefab("Table", Config)
+	local Class = ImGui:MergeMetatables(Config, Object)
+	
+	local UIListLayout = Object:FindFirstChildOfClass("UIListLayout")
+	local RowTemplate = Object.RowTemp
+
+	local RowsCount = 0
+	local BaseTableCount = #Object:GetChildren() --// Performance
+	
+	--// Configure Table style
+	if Fill then
+		Object.Size = self:GetRemainingHeight()
+	end
+
+	function Config:CreateRow()
+		RowsCount += 1
+		
+		--// Create Row object (Different to :Row)
+		local Row = RowTemplate:Clone()
+		Row.Name = "Row"
+		Row.Visible = true
+		Row.Parent = Object
+		
+		--// Set alignment
+		local UIListLayout = Row:FindFirstChildOfClass("UIListLayout")
+		UIListLayout.VerticalAlignment = Enum.VerticalAlignment[Align]
+		
+		local BaseCount = #Row:GetChildren() --// Performance
+
+		--// Background colors
+		if RowBackground then
+			local Transparency = RowsCount % 2 == 1 and RowTransparency or 1
+			Row.BackgroundTransparency = Transparency
+		end
+		
+		--// Row class
+		local RowClass = {}
+		function RowClass:CreateColumn()
+			--// Create column object
+			local Column = Row.ColumnTemp:Clone()
+			Column.Visible = true
+			Column.Name = "Column"
+			Column.Parent = Row
+			
+			--// Apply border
+			local Stroke = Column:FindFirstChildOfClass("UIStroke")
+			Stroke.Enabled = Border
+			
+			--// Content canvas
+			return ImGui:MakeCanvas({
+				Element =  Column,
+				Window = Window,
+				Class = Class
+			})
+		end
+
+		local function ResizeColumns()
+			if not Row or not Object then return end
+
+			local Columns = Row:GetChildren()
+			local Count = #Columns - BaseCount
+			
+			local Width = 1 / Count
+			local Size = UDim2.new(Width, 0, 0, 0)
+			
+			--// Resize each child column
+			for _, Column in next, Columns do
+				if not Column:IsA("Frame") then continue end
+				Column.Size = Size
+			end
+			
+			return RowClass
+		end
+		
+		--// Connect events
+		Row.ChildAdded:Connect(ResizeColumns)
+		Row.ChildRemoved:Connect(ResizeColumns)
+		
+		--// Content canvas
+		return ImGui:MakeCanvas({
+			Element = Row,
+			Window = Window,
+			Class = RowClass
+		})
+	end
+
+	local function ResizeRows()
+		local Rows = Object:GetChildren()
+		local PaddingY = UIListLayout.Padding.Offset + 2
+		local Count = #Rows - BaseTableCount
+		
+		local Height = 1 / Count
+		local Size = UDim2.new(1, 0, Height, -PaddingY)
+		
+		--// Resize each child row
+		for _, Row: Frame in next, Rows do
+			if not Row:IsA("Frame") then continue end
+			Row.Size = Size
+		end
+		
+		return Config
+	end
+
+	function Config:ClearRows()
+		RowsCount = 0
+		
+		--// Destroy each row
+		for _, Row: Frame in next, Object:GetChildren() do
+			if not Row:IsA("Frame") then continue end
+			if Row == RowTemplate then continue end
+			
+			Row:Destroy()
+		end
+		
+		return Config
+	end
+	
+	--// Expand rows to fill
+	if RowsFill then
+		Object.AutomaticSize = Enum.AutomaticSize.None
+		
+		--// Connect events
+		Object.ChildAdded:Connect(ResizeRows)
+		Object.ChildRemoved:Connect(ResizeRows)
+	end
+
+	return Class, Object
+end
+
+function Elements:Grid(Config)
+	Config.Grid = true
+	return self:Table(Config)
+end
+
+type CollapsingHeader = {
+	Title: string,
+	Icon: string?,
+	IsTree: boolean?,
+	NoAnimation: boolean?,
+	Open: boolean?,
+
+	SetOpen: (CollapsingHeader, Open: boolean) -> CollapsingHeader
+}
+function Elements:CollapsingHeader(Config: CollapsingHeader): CollapsingHeader
+	ImGui:CheckConfig(Config, {
+		Title = "Header",
+		Icon = "rbxassetid://4731371527",
+		NoAnimation = false,
+		Open = false,
+	})
+	
+	local Window = self.WindowClass
+	
+	--// Unpack config
+	local Title = Config.Title
+	local Icon = Config.Icon
+	local NoAnimation = Config.NoAnimation
+	local IsOpen = Config.Open
+	local Style = Config.ElementStyle
+	
+	--// Create header object
+	local Object = ImGui:InsertPrefab("CollapsingHeader", Config)
+	local Class = ImGui:MergeMetatables(Config, Object)
+
+	local Titlebar = Object.TitleBar
+	local TitleText = Titlebar.Title
+	local ToggleButton = Titlebar.Toggle.ToggleButton
+	local ContentFrame = Object.ChildContainer
+	local BaseSize = ContentFrame.Size
+	
+	--// Content canvas
+	local Canvas = ImGui:MakeCanvas({
+		Element =  ContentFrame,
+		Window = Window,
+		Class = Class
+	})
+	
+	TitleText.Text = Title
+	ToggleButton.Image = Icon
+	
+	--// Open Animations
+	function Config:SetOpen(Open)
+		local ContentSize = ImGui:GetContentSize(ContentFrame)
+		local OpenSize = BaseSize + UDim2.fromOffset(0, ContentSize.Y)
+		
+		Animation:HeaderCollapse({
+			Open = Open,
+			Toggle = ToggleButton,
+			Resize = ContentFrame,
+			Hide = ContentFrame,
+			
+			--// Sizes
+			ClosedSize = BaseSize,
+			OpenSize = OpenSize ,
+		})
+
+		self.Open = Open
+		return self
+	end
+
+	local function Toggle()
+		Config:SetOpen(not Config.Open)
+	end
+	
+	--// Apply style
+	ImGui:ApplyStyle(Titlebar, Style)
+
+	--// Update UI
+	Config:SetOpen(IsOpen)
+
+	--// Connect events
+	Titlebar.Activated:Connect(Toggle)
+	ToggleButton.Activated:Connect(Toggle)
+	
+	--// Add to elements dict
+	Config.ToColor = {
+		[Titlebar] = "CollapsingHeader",
+		[TitleText] = "CollapsingHeaderText"
+	}
+
+	return Canvas, false
+end
+
+function Elements:TreeNode(Config)
+	Config.IsTree = true
+	return self:CollapsingHeader(Config)
+end
+
+type Separator = {
+	Text: string?
+}
+function Elements:Separator(Config: Separator): Separator
+	local Text = Config.Text
+	
+	--// Create septator object
+	local Object = ImGui:InsertPrefab("SeparatorText", Config)
+	local Class = ImGui:MergeMetatables(Config, Object)
+	
+	--// Configure text label
+	local HeaderLabel = Object.TextLabel
+	HeaderLabel.Text = tostring(Text)
+	HeaderLabel.Visible = Text ~= nil
+	
+	return Object, Class
+end
+
+type Row = {
+	Spacing: number?,
+
+	Fill: (Row) -> Row
+}
+function Elements:Row(Config: Row): Row
+	ImGui:CheckConfig(Config, {
+		Spacing = 2
+	})
+	
+	--// Unpack configuation
+	local Window = self.WindowClass
+	
+	local Spacing = Config.Spacing
+	
+	--// Create row object
+	local Object = ImGui:InsertPrefab("Row", Config)
+	local Class = ImGui:MergeMetatables(Config, Object)
+
+	local UIListLayout = Object:FindFirstChildOfClass("UIListLayout")
+	local UIPadding = Object:FindFirstChildOfClass("UIPadding")
+	UIListLayout.Padding = UDim.new(0, Spacing)
+
+	function Config:Fill()
+		local Children = Object:GetChildren()
+		local Rows = #Children - 2 --// -UIListLayout + UIPadding
+
+		--// Change layout
+		local Alignment = Enum.HorizontalAlignment.Center
+		local Padding = UIListLayout.Padding.Offset * 2
+		UIListLayout.HorizontalAlignment = Alignment
+
+		--// Apply correct margins
+		UIPadding.PaddingLeft = UIListLayout.Padding
+		UIPadding.PaddingRight = UIListLayout.Padding
+		
+		--// Resize elements
+		for _, Child: Instance in next, Children do
+			local YScale = 0
+			if Child:IsA("ImageButton") then
+				YScale = 1
+			end
+			pcall(function()
+				Child.Size = UDim2.new(1/Rows, -(Padding+Spacing), YScale, 0)
+			end)
+		end
+		return Config
+	end
+	
+	--// Content canvas
+	local Canvas = ImGui:MakeCanvas({
+		Element = Object,
+		Window = Window,
+		Class = Class
+	})
+
+	return Canvas, Object
+end
+
+--TODO
+-- Vertical 
+-- :SetPercentage
+type Slider = {
+	Value: number?,
+	Format: string?,
+	Label: string?,
+	Progress: boolean?,
+	MinValue: number,
+	MaxValue: number
+}
+function Elements:Slider(Config: Slider)
+	ImGui:CheckConfig(Config, {
+		Value = 0,
+		Format = "%.d/%s",
+		Label = "",
+		Progress = false,
+		NoAnimate = false
+	})
+	
+	--// Unpack config
+	local Value = Config.Value
+	local Format = Config.Format
+	local Label = Config.Label
+	local IsProgress = Config.Progress
+	local Animate = Config.NoAnimate ~= true
+	Config.Name = Label or ""
+	
+	--// Create slider element
+	local Object = ImGui:InsertPrefab("Slider", Config)
+	local Grab: Frame = Object.Grab
+	local ValueText = Object.ValueText
+	local Label = Object.Label
+	
+	local UIPadding = Object:FindFirstChildOfClass("UIPadding")
+	local Drag = ImGui:GetChildOfClass(Object, "UIDragDetector")
+
+	local Class = ImGui:MergeMetatables(Config, Object)
+
+	--// Input data
+	local Dragging = false
+	local MouseMoveConnection = nil
+	local InputType = Enum.UserInputType.MouseButton1
+
+	local function Callback(...)
+		local func = Config.Callback or EmptyFunction
+		return func(Class, ...)
+	end
+
+	--// Apply Progress styles
+	if IsProgress then
+		local UIGradient = Grab:FindFirstChildOfClass("UIGradient")
+
+		local PaddingSides = UDim.new(0,2)
+		local Diff = UIPadding.PaddingLeft - PaddingSides
+		
+		UIGradient.Enabled = true
+		UIPadding.PaddingLeft = PaddingSides
+		UIPadding.PaddingRight = PaddingSides
+		
+		Grab.AnchorPoint = Vector2.new(0, 0.5)
+		
+		Label.Position = UDim2.new(1, 15-Diff.Offset, 0, 0)
+	end
+
+	function Config:SetValue(Value: number, Slider: false)
+		local MinValue = Config.MinValue
+		local MaxValue = Config.MaxValue
+		local Difference = MaxValue - MinValue
+		local Percentage = (Value - MinValue) / Difference
+
+		if not Slider then
+			Value = tonumber(Value)
+		else
+			Percentage = Value
+			Value = MinValue + (Difference * Percentage)
+		end
+
+		--// Animate grab
+		local Props = {
+			Position = UDim2.fromScale(Percentage, 0.5)
+		}
+
+		if IsProgress then
+			Props = {
+				Size = UDim2.fromScale(Percentage, 1)
+			}
+		end
+
+		--// Animate
+		Animation:Tween({
+			Object = Grab,
+			NoAnimation = Animate,
+			EndProperites = Props
+		})
+
+		--// Update UI
+		Config.Value = Value
+		ValueText.Text = Format:format(Value, MaxValue) 
+
+		--// Fire callback
+		Callback(Value)
 
 		return Config
 	end
 
-	function ContainerClass:Keybind(Config)
-		Config = Config or {}
-		local Keybind: TextButton = Prefabs.Keybind:Clone()
-		local ValueText: TextButton = Keybind.ValueText
-		local Key = Config.Value 
-		local ObjectClass = nil
-
-		local function Callback(...)
-			local func = Config.Callback or NullFunction
-			return func(ObjectClass, ...)
-		end
-
-		function Config:SetValue(NewKey: Enum.KeyCode)
-			if not NewKey then return end
-			ValueText.Text = NewKey.Name
-			Config.Value = NewKey
-
-			if NewKey == Enum.KeyCode.Backspace then
-				ValueText.Text = "Not set"
-				return
-			end
-		end
-		Config:SetValue(Key)
-
-		Keybind.Activated:Connect(function()
-			ValueText.Text = "..."
-			local NewKey = UserInputService.InputBegan:wait()
-			if not UserInputService.WindowFocused then return end 
-
-			if NewKey.KeyCode.Name == "Unknown" then
-				return Config:SetValue(Key)
-			end
-
-			wait(.1) --// 👍
-			Config:SetValue(NewKey.KeyCode)
-		end)
-
-		Config.Connection = UserInputService.InputBegan:Connect(function(Input, GameProcessed)
-			if not Config.IgnoreGameProcessed and GameProcessed then return end
-
-			if Input.KeyCode == Config.Value then
-				return Callback(Input.KeyCode)
-			end
-		end)
-
-		ObjectClass = self:NewInstance(Keybind, Config)
-		return ObjectClass
+	------// Move events
+	local function CanDrag(): boolean
+		return not Config.ReadOnly
 	end
+	local function DragMovement(InputPosition)
+		if not CanDrag() then return end
 
-	function ContainerClass:Combo(Config)
-		Config = Config or {}
-		Config.Open = false
+		local MouseX = UserInputService:GetMouseLocation().X
+		local LeftPos = Object.AbsolutePosition.X
 
-		local Combo: TextButton = Prefabs.Combo:Clone()
-		local Toggle: ImageButton = Combo.Toggle.ToggleButton
-		local ValueText = Combo.ValueText
-		ValueText.Text = Config.Placeholder or ""
-
-		local Dropdown = nil
-		local ObjectClass = self:NewInstance(Combo, Config)
-
-		local ComboHovering = ImGui:ConnectHover({
-			Parent = Combo
-		})
-
-		local function Callback(Value, ...)
-			local func = Config.Callback or NullFunction
-			Config:SetOpen(false)
-			return func(ObjectClass, Value, ...)
-		end
-
-		function Config:SetValue(Value, ...)
-			local Items = Config.Items or {}
-			local DictValue = Items[Value]
-			ValueText.Text = tostring(Value)
-			Config.Selected = Value
-
-			return Callback(DictValue or Value) 
-		end
-
-		function Config:SetOpen(Open: true)
-			local Animate = Config.NoAnimation ~= true
-			ImGui:HeaderAnimate(Combo, Animate, Open, Combo, Toggle)
-			Config.Open = Open
-
-			if Open then
-				Dropdown = ImGui:Dropdown({
-					Parent = Combo,
-					Items = Config.Items or {},
-					SetValue = Config.SetValue,
-					Closed = function()
-						if not ComboHovering.Hovering then 
-							Config:SetOpen(false)
-						end
-					end,
-				})
-			end
-
-			return self
-		end
-
-		local function ToggleOpen()
-			if Dropdown then
-				Dropdown:Close()
-			end
-			Config:SetOpen(not Config.Open)
-		end
-
-		--// Connect events
-		Combo.Activated:Connect(ToggleOpen)
-		Toggle.Activated:Connect(ToggleOpen)
-		ImGui:ApplyAnimations(Combo, "Buttons")
-
-		if Config.Selected then
-			Config:SetValue(Config.Selected)
-		end
-
-		return ObjectClass 
+		local Percentage = (MouseX-LeftPos)/Object.AbsoluteSize.X
+		Percentage = math.clamp(Percentage, 0, 1)
+		Config:SetValue(Percentage, true)
 	end
+	
+	--// Update UI
+	Config:SetValue(Value)
+	
+	--// Connect movement events
+	Drag.DragStart:Connect(DragMovement)
+	Drag.DragContinue:Connect(DragMovement)
 
-	return ContainerClass
+	return Class, Object
 end
 
-function ImGui:Dropdown(Config)
-	local Parent: GuiObject = Config.Parent
-	if not Parent then return end
+function Elements:ProgressSlider(Config)
+	Config.Progress = true
+	return self:Slider(Config)
+end
 
-	local Selection: ScrollingFrame = Prefabs.Selection:Clone()
-	local UIStroke = Selection:FindFirstChildOfClass("UIStroke")
-
-	local Padding = UIStroke.Thickness*2
-	local Position = Parent.AbsolutePosition
-	local Size = Parent.AbsoluteSize
-
-	Selection.Parent = self.ScreenGui
-	Selection.Position = UDim2.fromOffset(Position.X+Padding, Position.Y+Size.Y)
-
-	local Hover = self:ConnectHover({
-		Parent = Selection,
-		OnInput = function(MouseHovering, Input)
-			if not Input.UserInputType.Name:find("Mouse") then return end
-
-			if not MouseHovering then
-				Config:Close()
-			end
-		end,
-	})
-
-	function Config:Close()
-		local CloseCallback = Config.Closed
-		if CloseCallback then
-			CloseCallback()
-		end
-		Hover:Disconnect()
-		return Selection:Remove()
+type ProgressBar = {
+	SetPercentage: (self, Value: number) -> nil
+}
+function Elements:ProgressBar(Config)
+	Config.Progress = true
+	Config.ReadOnly = true
+	Config.MinValue = 0
+	Config.MaxValue = 100
+	Config.Format = "% i%%"
+	function Config:SetPercentage(Value: number)
+		Config:SetValue(Value)
 	end
 
-	local function SetValue(self)
-		local Value = self.Text
-		Config:Close()
-		return Config:SetValue(Value)
-	end
-
-	--// Append items
-	local ItemTemplate: TextButton = Selection.Template
-	ItemTemplate.Visible = false
-
-	for Index, Index2 in next, Config.Items do
-		local NewItem: TextButton = ItemTemplate:Clone()
-		NewItem.Text = typeof(Index) ~= "number" and tostring(Index) or tostring(Index2)
-		NewItem.Parent = Selection
-		NewItem.Visible = true
-
-		self:ApplyAnimations(NewItem, "Tabs")
-		NewItem.Activated:Connect(function()
-			return SetValue(NewItem)
-		end)
-	end
-	
-	--// Configure size of the frame
-		-- Roblox does not support UISizeConstraint on a scrolling frame grr
-	
-	local MaxSizeY = Config.MaxSizeY or 200
-	local YSize = math.clamp(Selection.AbsoluteCanvasSize.Y, Size.Y, MaxSizeY)
-	Selection.Size = UDim2.fromOffset(Size.X-Padding, YSize)
-	
-	return Config
+	return self:Slider(Config)
 end
 
 function ImGui:GetAnimation(Animation: boolean?)
 	return Animation and self.Animation or TweenInfo.new(0)
 end
 
-function ImGui:Tween(Instance: GuiObject, Props: SharedTable, tweenInfo, NoAnimation: false)
-	local tweenInfo = tweenInfo or ImGui:GetAnimation(not NoAnimation)
-	local Tween = TweenService:Create(Instance, 
-		tweenInfo,
-		Props
-	)
-	Tween:Play()
-	return Tween
-end
+function ImGui:ApplyAnimation(Object: GuiObject, Reference: string)
+	local Animations = self.Animations
 
-function ImGui:ApplyAnimations(Instance: GuiObject, Class: string, Target: GuiObject?)
-	local Animatons = ImGui.Animations
-	local ColorProps = Animatons[Class]
+	local Data = Animations[Reference]
+	assert(Data, `No animation data for Class {Reference}!`)
 
-	if not ColorProps then 
-		return warn("No colors for", Class)
-	end
+	local Init = Data.Init
+	local Connections = Data.Connections
+	local Tweeninfo = Data.Tweeninfo
 
-	--// Apply tweens for connections
-	local Connections = {}
-	for Connection, Props in next, ColorProps do
-		if typeof(Props) ~= "table" then continue end
-		local Target = Target or Instance
-		local Callback = function()
-			ImGui:Tween(Target, Props)
+	--// Connect signals
+	local InitFunc = nil
+	for SignalName, Properties in next, Connections do
+		local function OnSignal()
+			Animation:Tween({
+				Object = Object,
+				Tweeninfo = Tweeninfo, 
+				EndProperites = Properties
+			})
 		end
 
-		--// Connections
-		Connections[Connection] = Callback
-		Instance[Connection]:Connect(Callback)
+		local Signal = Object[SignalName]
+		Signal:Connect(OnSignal)
+
+		if SignalName == Init then
+			InitFunc = OnSignal
+		end
 	end
 
-	--// Reset colors
-	if Connections["MouseLeave"] then
-		Connections["MouseLeave"]()
+	--// Reset colors function
+	if InitFunc then
+		InitFunc()
 	end
-
-	return Connections 
 end
 
-function ImGui:HeaderAnimate(Header: Instance, Animation, Open, TitleBar: Instance, Toggle)
-	local ToggleButtion = Toggle or TitleBar.Toggle.ToggleButton
+function ImGui:GetChildOfClass(Object: GuiObject, ClassName: string): GuiObject
+	local Child = Object:FindFirstChildOfClass(ClassName)
 
-	--// Togle animation
-	ImGui:Tween(ToggleButtion, {
-		Rotation = Open and 90 or 0,
-	}):Play()
-
-	--// Container animation
-	local Container: Frame = Header:FindFirstChild("ChildContainer")
-	if not Container then return end
-
-	local UIListLayout: UIListLayout = Container.UIListLayout
-	local UIPadding: UIPadding = Container:FindFirstChildOfClass("UIPadding")
-	local ContentSize = UIListLayout.AbsoluteContentSize
-
-	if UIPadding then
-		local Top = UIPadding.PaddingTop.Offset
-		local Bottom = UIPadding.PaddingBottom.Offset
-		ContentSize = Vector2.new(ContentSize.X, ContentSize.Y+Top+Bottom)
+	--// Create missing child
+	if not Child then
+		Child = Instance.new(ClassName, Object)
 	end
 
-	Container.AutomaticSize = Enum.AutomaticSize.None
-	if not Open then
-		Container.Size = UDim2.new(1, -10, 0, ContentSize.Y)
-	end
-
-	--// Animate
-	local Tween = ImGui:Tween(Container, {
-		Size = UDim2.new(1, -10, 0, Open and ContentSize.Y or 0),
-		Visible = Open
-	})
-	Tween.Completed:Connect(function()
-		if not Open then return end
-		Container.AutomaticSize = Enum.AutomaticSize.Y
-		Container.Size = UDim2.new(1, -10, 0, 0)
-	end)
+	return Child
 end
 
-function ImGui:ApplyDraggable(Frame: Frame, Header: Frame)
-	local tweenInfo = ImGui:GetAnimation(true)
-	local Header = Header or Frame
+type Check = {
+	Table: {},
+	Key: string
+}
+local function GetCheckValue(Check): boolean?
+	if not Check then return end
 
-	local Dragging = false
-	local KeyBeganPos = nil
-	local BeganPos = Frame.Position
+	local Table = Check.Table
+	local Key = Check.Key
+	local Value = Table[Key]
+	return Value
+end
 
-	--// Whitelist
-	local UserInputTypes = {
-		Enum.UserInputType.MouseButton1,
-		Enum.UserInputType.Touch
-	}
+type ApplyDraggable = {
+	Move: Instance,
+	Grab: Instance,
+	Check: Check?
+}
+function ImGui:ApplyDraggable(Config: ApplyDraggable)
+	--// Unpack config
+	local Move = Config.Move
+	local Grab = Config.Grab
+	local Check = Config.Check
 
-	local function UserInputTypeAllowed(InputType: Enum.UserInputType)
-		return table.find(UserInputTypes, InputType)
+	local Drag = ImGui:GetChildOfClass(Grab, "UIDragDetector")
+
+	local PositionOrgin = nil
+	local InputOrgin = nil
+
+	local function CanDrag(): boolean
+		return GetCheckValue(Check) ~= true
 	end
+	local function DragBegin(InputPosition)
+		PositionOrgin = Move.Position
+		InputOrgin = InputPosition
+	end
+	local function DragMovement(InputPosition)
+		if not CanDrag() then return end
 
-	--// Debounce 
-	Header.InputBegan:Connect(function(Key)
-		if UserInputTypeAllowed(Key.UserInputType) then
-			Dragging = true
-			KeyBeganPos = Key.Position
-			BeganPos = Frame.Position
-		end
-	end)
-
-	UserInputService.InputEnded:Connect(function(Key)
-		if UserInputTypeAllowed(Key.UserInputType) then
-			Dragging = false
-		end
-	end)
-
-	--// Dragging
-	local function Movement(Input)
-		if not Dragging then return end
-
-		local Delta = Input.Position - KeyBeganPos
+		local Delta = InputPosition - InputOrgin
 		local Position = UDim2.new(
-			BeganPos.X.Scale, 
-			BeganPos.X.Offset + Delta.X, 
-			BeganPos.Y.Scale, 
-			BeganPos.Y.Offset + Delta.Y
+			PositionOrgin.X.Scale, 
+			PositionOrgin.X.Offset + Delta.X, 
+			PositionOrgin.Y.Scale, 
+			PositionOrgin.Y.Offset + Delta.Y
 		)
 
-		ImGui:Tween(Frame, {
-			Position = Position
-		}):Play()
+		--// Tween frame element to the new size
+		Animation:Tween({
+			Object = Move,
+			EndProperites = {
+				Position = Position
+			}
+		})
 	end
 
 	--// Connect movement events
-	UserInputService.TouchMoved:Connect(Movement)
-	UserInputService.InputChanged:Connect(function(Input)
-		if Input.UserInputType == Enum.UserInputType.MouseMovement then 
-			return Movement(Input)
-		end
-	end)
+	Drag.DragStart:Connect(DragBegin)
+	Drag.DragContinue:Connect(DragMovement)
 end
 
+type ApplyResizable = {
+	MiniumSize: Vector2,
+	MaxiumSize: Vector2,
+	Grab: Instance,
+	Resize: Instance,
+	Check: Check?,
+	OnUpdate: (UDim2) -> ...any
+}
+function ImGui:ApplyResizable(Config: ApplyResizable)
+	ImGui:CheckConfig(Config, {
+		MiniumSize = Vector2.new(160, 90),
+		MaxiumSize = Vector2.new(math.huge, math.huge)
+	})
 
-function ImGui:ApplyResizable(MinSize, Frame: Frame, Dragger: TextButton, Config)
-	local DragStart
-	local OrignialSize
+	--// Unpack config
+	local MaxiumSize = Config.MaxiumSize
+	local MiniumSize = Config.MiniumSize
+	local Resize = Config.Resize
+	local Grab = Config.Grab
+	local Check = Config.Check
+	local OnUpdate = Config.OnUpdate
 
-	MinSize = MinSize or Vector2.new(160, 90)
+	local Drag = ImGui:GetChildOfClass(Grab, "UIDragDetector")
 
-	Dragger.MouseButton1Down:Connect(function()
-		if DragStart then return end
-		OrignialSize = Frame.AbsoluteSize			
-		DragStart = Vector2.new(Mouse.X, Mouse.Y)
-	end)	
+	local InputOrgin = nil
+	local SizeOrgin = nil
 
-	UserInputService.InputChanged:Connect(function(Input)
-		if not DragStart or Input.UserInputType ~= Enum.UserInputType.MouseMovement then 
-			return
-		end
+	local function CanDrag(): boolean
+		return GetCheckValue(Check) ~= true
+	end
+	local function DragBegin(InputPosition)
+		SizeOrgin = Resize.AbsoluteSize
+		InputOrgin = InputPosition
+	end
+	local function DragMovement(InputPosition)
+		if not CanDrag() then return end
 
-		local MousePos = Vector2.new(Mouse.X, Mouse.Y)
-		local mouseMoved = MousePos - DragStart
+		local Delta = InputPosition - InputOrgin
+		local NewSize = SizeOrgin + Delta
 
-		local NewSize = OrignialSize + mouseMoved
-		NewSize = UDim2.fromOffset(
-			math.max(MinSize.X, NewSize.X), 
-			math.max(MinSize.Y, NewSize.Y)
+		--// Clamp size
+		local Size = UDim2.fromOffset(
+			math.clamp(NewSize.X, MiniumSize.X, MaxiumSize.X), 
+			math.clamp(NewSize.Y, MiniumSize.Y, MaxiumSize.Y)
 		)
 
-		Frame.Size = NewSize
-		if Config then
-			Config.Size = NewSize
+		--// Call update function instead of tweening
+		if OnUpdate then
+			return OnUpdate(Size)
 		end
-	end)
 
-	UserInputService.InputEnded:Connect(function(Input)
-		if Input.UserInputType == Enum.UserInputType.MouseButton1 then
-			DragStart = nil
-		end
-	end)	
+		--// Tween frame element to the new size
+		Animation:Tween({
+			Object = Resize,
+			EndProperites = {
+				Size = Size
+			}
+		})
+	end
+
+	--// Connect movement events
+	Drag.DragStart:Connect(DragBegin)
+	Drag.DragContinue:Connect(DragMovement)
 end
 
 function ImGui:ConnectHover(Config)
+	local OnInput = Config.OnInput
 	local Parent = Config.Parent
-	local Connections = {}
 	Config.Hovering = false
+
+	local Connections = {}
+
+	function Config:Disconnect()
+		for _, Connection in next, Connections do
+			Connection:Disconnect()
+		end
+	end
 
 	--// Connect Events
 	table.insert(Connections, Parent.MouseEnter:Connect(function()
@@ -1376,369 +2104,497 @@ function ImGui:ConnectHover(Config)
 		Config.Hovering = false
 	end))
 
-	if Config.OnInput then
+	if OnInput then
 		table.insert(Connections, UserInputService.InputBegan:Connect(function(Input)
-			return Config.OnInput(Config.Hovering, Input)
+			return OnInput(Config.Hovering, Input)
 		end))
-	end
-
-	function Config:Disconnect()
-		for _, Connection in next, Connections do
-			Connection:Disconnect()
-		end
 	end
 
 	return Config
 end
 
-function ImGui:ApplyWindowSelectEffect(Window: GuiObject, TitleBar)
-	local UIStroke = Window:FindFirstChildOfClass("UIStroke")
+function ImGui:StackWindows()
+	local Windows = self.Windows
+	local Offset = 20
 
-	local Colors = {
-		Selected = {
-			BackgroundColor3 = TitleBar.BackgroundColor3
-		},
-		Deselected = {
-			BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-		}
-	}
+	for Index, Data in next, Windows do
+		local Window: Frame = Data.Window
+		local Class = Data.Class
 
-	local function SetSelected(Selected)
-		local Animations = ImGui.Animations
-		local Type = Selected and "Selected" or "Deselected"
-		local TweenInfo = ImGui:GetAnimation(true) 
+		local Position = UDim2.fromOffset(Offset*Index, Offset*Index)
 
-		ImGui:Tween(TitleBar, Colors[Type])
-		ImGui:Tween(UIStroke, Animations.WindowBorder[Type])
+		Class:Center()
+		Window.Position += Position
+	end
+end
+
+type ApplyBorderSelectEffect = {
+	Window: Instance,
+	TitleBar: Instance,
+	Check: Check?
+}
+function ImGui:ApplyBorderSelectEffect(Config: ApplyBorderSelectEffect)
+	--// Unpack config
+	local Window = Config.Window
+	local TitleBar = Config.TitleBar
+	local Check = Config.Check
+	local Colors = Config.Colors
+
+	local Border = Window:FindFirstChildOfClass("UIStroke")
+
+	local function ShouldPlay(): boolean
+		return GetCheckValue(Check) ~= true
 	end
 
+	local function SetSelected(IsSelected: boolean)
+		--// Colors
+		local Data = nil
+
+		if IsSelected then
+			Data = {
+				[Border] = "BorderSelected",
+				[TitleBar] = "SelectedTitleBar",
+			}
+		else
+			Data = {
+				[Border] = "BorderDeselected",
+				[TitleBar] = "DeselectedTitleBar",
+			}
+		end
+
+		--// Update colors
+		self:MultiUpdateColors({
+			Animate = true,
+			Objects = Data,
+			Colors = Colors,
+		})
+	end
+	
+	--// Connect events
 	self:ConnectHover({
 		Parent = Window,
 		OnInput = function(MouseHovering, Input)
+			if not ShouldPlay() then return end
 			if Input.UserInputType.Name:find("Mouse") then
 				SetSelected(MouseHovering)
 			end
 		end,
 	})
+	
+	--// Update UI
+	SetSelected(true)
 end
 
-function ImGui:SetWindowProps(Properties, IgnoreWindows)
-	local Module = {
-		OldProperties = {}
+local WindowClass = {
+	--// Icons
+	TileBarConfig = {
+		Close = {
+			Image = "rbxasset://textures/AnimationEditor/icon_close.png",	
+			IconSize = UDim2.fromOffset(11,11),
+		},
+		Collapse = {
+			Image = "rbxassetid://4731371527",
+			IconSize = UDim2.fromScale(1,1),
+		},
+	},
+
+	--// States
+	CanOpen = true,
+	Open = true,
+}
+
+export type TitleBarCanvas = {
+	Right: table,
+	Left: table,
+}
+function WindowClass:MakeTitleBarCanvas(): TitleBarCanvas
+	local TitleBar = self.TitleBar
+	local Left = TitleBar.Left
+	local Right = TitleBar.Right
+
+	local Canvas = {
+		Right = ImGui:MakeCanvas({
+			Element =  Right,
+			Window = self,
+		}),
+		Left = ImGui:MakeCanvas({
+			Element =  Left,
+			Window = self,
+		})
 	}
-	
-	--// Collect windows & set properties
-	for Window in next, ImGui.Windows do
-		if table.find(IgnoreWindows, Window) then continue end
-		
-		local OldValues = {}
-		Module.OldProperties[Window] = OldValues
-		
-		for Key, Value in next, Properties do
-			OldValues[Key] = Window[Key]
-			Window[Key] = Value
-		end
-	end
-	
-	--// Revert to previous values
-	function Module:Revert()
-		for Window in next, ImGui.Windows do
-			local OldValues = Module.OldProperties[Window]
-			if not OldValues then continue end
 
-			for Key, Value in next, OldValues do
-				Window[Key] = Value
-			end
-		end
-	end
-	
-	return Module
+	self.TitleBarCanvas = Canvas
+
+	return Canvas
 end
 
-function ImGui:CreateWindow(WindowConfig)
-	--// Create Window frame
-	local Window: Frame = Prefabs.Window:Clone()
-	Window.Parent = ImGui.ScreenGui
-	Window.Visible = true
-	WindowConfig.Window = Window
+function WindowClass:AddDefaultTitleButtons()
+	local Config = self.TileBarConfig
+	local IsOpen = self.Open
+	local NoCollapse = self.NoCollapse
 
-	local Content = Window.Content
-	local Body = Content.Body
+	local Toggle = Config.Collapse
+	local Close = Config.Close
 
-	--// Window Resize
-	local Resize = Window.ResizeGrab
-	Resize.Visible = WindowConfig.NoResize ~= true
-
-	local MinSize = WindowConfig.MinSize or Vector2.new(160, 90)
-	ImGui:ApplyResizable(
-		MinSize, 
-		Window, 
-		Resize,
-		WindowConfig
-	)
-
-	--// Title Bar
-	local TitleBar: Frame = Content.TitleBar
-	TitleBar.Visible = WindowConfig.NoTitleBar ~= true
-
-	local Toggle = TitleBar.Left.Toggle
-	Toggle.Visible = WindowConfig.NoCollapse ~= true
-	ImGui:ApplyAnimations(Toggle.ToggleButton, "Tabs")
-
-	local ToolBar = Content.ToolBar
-	ToolBar.Visible = WindowConfig.TabsBar ~= false
-
-	if not WindowConfig.NoDrag then
-		ImGui:ApplyDraggable(Window)
+	--// Check for Titlebar canvas
+	local Canvas = self.TitleBarCanvas
+	if not Canvas then
+		Canvas = self:MakeTitleBarCanvas()
 	end
 
-	--// Close Window 
-	local CloseButton: TextButton = TitleBar.Close
-	CloseButton.Visible = WindowConfig.NoClose ~= true
+	--// Canvas groups
+	local Left = Canvas.Left
+	local Right = Canvas.Right
 
-	function WindowConfig:Close()
-		local Callback = WindowConfig.CloseCallback
-		WindowConfig:SetVisible(false)
-		if Callback then
-			Callback(WindowConfig)
+	--// Create radio buttons
+	self.Toggle = Left:RadioButton({
+		Visible = not NoCollapse,
+		Icon = Toggle.Image,
+		IconSize = Toggle.IconSize,
+		Rotation = IsOpen and 90 or 0,
+		LayoutOrder = 1,
+
+		Callback = function()
+			self:ToggleOpen()
+		end,
+	})
+	self.CloseButton = Right:RadioButton({
+		Visible = not self.NoClose,
+		Icon = Close.Image,
+		IconSize = Close.IconSize,
+		LayoutOrder = 2,
+
+		Callback = function()
+			self:Close()
+		end,
+	})
+
+	self.TitleLabel = Left:Label({
+		Text = "Roblox ImGui by depso",
+		ColorTag = "Title",
+		LayoutOrder = 2,
+		TextSize = 15,
+		Bold = true,
+	})
+end
+
+function WindowClass.CloseCallback() end --// Placeholder
+
+function WindowClass:Close(): WindowClass
+	local Callback = self.CloseCallback
+	local Window = self.Window
+
+	--// Test for interupt
+	if Callback then
+		local Responce = Callback(self)
+		if Responce == false then
+			return self
 		end
-		return WindowConfig
-	end
-	CloseButton.Activated:Connect(WindowConfig.Close)
-
-	function WindowConfig:GetHeaderSizeY(): number
-		local ToolbarY = ToolBar.Visible and ToolBar.AbsoluteSize.Y or 0
-		local TitlebarY = TitleBar.Visible and TitleBar.AbsoluteSize.Y or 0
-		return ToolbarY + TitlebarY
 	end
 
-	function WindowConfig:UpdateBody()
-		local HeaderSizeY = self:GetHeaderSizeY()
-		Body.Size = UDim2.new(1, 0, 1, -HeaderSizeY)
+	self:Remove()
+	return self
+end
+
+function WindowClass:GetWindowSize(): Vector2
+	local Window = self.Window
+	return Window.AbsoluteSize 
+end
+
+function WindowClass:GetTitleBarSizeY(): number
+	local TitleBar = self.TitleBar
+	return TitleBar.Visible and TitleBar.AbsoluteSize.Y or 0
+end
+
+function WindowClass:GetToolBarSizeY(): number
+	local ToolBar = self.ToolBar
+	return ToolBar.Visible and ToolBar.AbsoluteSize.Y or 0
+end
+
+function WindowClass:GetHeaderSizeY(): number
+	local ToolBar = self.ToolBar
+
+	local TitlebarY = self:GetTitleBarSizeY()
+	local ToolbarY = self:GetToolBarSizeY()
+
+	return ToolbarY + TitlebarY
+end
+
+function WindowClass:UpdateBody()
+	local HeaderSizeY = self:GetHeaderSizeY()
+	local Body = self.Body
+	Body.Size = UDim2.new(1, 0, 1, -HeaderSizeY)
+end
+
+function WindowClass:SetVisible(Visible: boolean): WindowClass
+	local Window = self.Window
+	Window.Visible = Visible 
+	return self
+end
+
+function WindowClass:SetTitle(Text: string?): WindowClass
+	local Title = self.TitleLabel
+	Title.Text = tostring(Text)
+	return self
+end
+
+function WindowClass:Remove()
+	local Window = self.Window
+	Window:Destroy()
+end
+
+function WindowClass:SetPosition(Position): WindowClass
+	local Window = self.Window
+	Window.Position = Position
+	return self
+end
+
+function WindowClass:SetSize(Size: (Vector2|UDim2), Animate: boolean): WindowClass
+	local Window = self.Window
+
+	--// Convert Vector2 to UDim2
+	if typeof(Size) == "Vector2" then
+		Size = UDim2.fromOffset(Size.X, Size.Y)
 	end
-	WindowConfig:UpdateBody()
 
-	--// Open/Close
-	WindowConfig.Open = true
-	function WindowConfig:SetOpen(Open: true, NoAnimation: false)
-		local WindowAbSize = Window.AbsoluteSize 
-		local TitleBarSize = TitleBar.AbsoluteSize 
+	--// Tween to the new size
+	Animation:Tween({
+		Object = Window,
+		NoAnimation = Animate,
+		EndProperites = {
+			Size = Size
+		}
+	})
 
-		self.Open = Open
+	self.Size = Size
 
-		--// Call animations
-		ImGui:HeaderAnimate(TitleBar, true, Open, TitleBar, Toggle.ToggleButton)
-		ImGui:Tween(Resize, {
+	return self
+end
+
+function WindowClass:Center(): WindowClass --// Without an Anchor point
+	local Window = self.Window
+	local Size = self:GetWindowSize() / 2
+
+	local Position = UDim2.new(0.5, -Size.X, 0.5, -Size.Y)
+	self:SetPosition(Position)
+
+	return self
+end
+
+function WindowClass:UpdateColors(): WindowClass
+	local Elements = self.Elements
+	local Colors = self.Colors
+	
+	ImGui:MultiUpdateColors({
+		Animate = false,
+		Colors = Colors,
+		Objects = Elements
+	})
+
+	return WindowClass
+end
+
+function WindowClass:ResetColors(): WindowClass
+	local Defaults = ImGui.Colors
+	local Colors = self.Colors
+	local Elements = self.Elements
+	
+	--// Reset values
+	table.clear(Colors)
+	--for Name in next, Colors do
+	--	Colors[Name] = Defaults[Name]
+	--end
+
+	ImGui:MultiUpdateColors({
+		Animate = false,
+		Colors = Defaults,
+		Objects = Elements
+	})
+	
+	return WindowClass
+end
+
+function WindowClass:SetOpenable(CanOpen: boolean): WindowClass
+	self.CanOpen = CanOpen
+	return self
+end
+
+function WindowClass:ToggleOpen(NoCheck: boolean?): WindowClass
+	local IsOpen = self.Open
+	local CanOpen = self.CanOpen
+	local NewState = not IsOpen
+	
+	--// Check if the window can be opened
+	if not NoCheck and not CanOpen then return end
+	
+	self:SetOpen(NewState)
+	return self
+end
+
+function WindowClass:SetOpen(Open: boolean, NoAnimation: false): WindowClass
+	local Window = self.Window
+	local TitleBar = self.TitleBar
+	--local Body = self.Body
+	local Toggle = self.Toggle
+	local ResizeGrab = self.ResizeGrab
+	local OpenSize = self.Size
+	local AutoSize = self.AutoSize
+
+	local WindowSize = self:GetWindowSize()
+	local TitleBarSizeY = self:GetTitleBarSizeY()
+
+	local ToggleIcon = Toggle.Icon
+	local ClosedSize = UDim2.fromOffset(WindowSize.X, TitleBarSizeY)
+
+	self.Open = Open
+	self:SetOpenable(false)
+
+	--// Animate the closing
+	Animation:HeaderCollapse({
+		Open = Open,
+		Toggle = ToggleIcon,
+		Resize = Window,
+		NoAutomaticSize = not AutoSize,
+		--Hide = Body.Real,
+		--// Sizes
+		ClosedSize = ClosedSize,
+		OpenSize = OpenSize,
+	}).Completed:Connect(function()
+		self:SetOpenable(true)
+	end)
+
+	--// ResizeGrab
+	Animation:Tween({
+		Object = ResizeGrab,
+		EndProperites = {
 			TextTransparency = Open and 0.6 or 1,
 			Interactable = Open
-		}, nil, NoAnimation)
-		ImGui:Tween(Window, {
-			Size = Open and self.Size or UDim2.fromOffset(WindowAbSize.X, TitleBarSize.Y)
-		}, nil, NoAnimation)
-		ImGui:Tween(Body, {
-			Visible = Open
-		}, nil, NoAnimation)
-		return self
-	end
-
-	function WindowConfig:SetVisible(Visible: boolean)
-		Window.Visible = Visible 
-		return self
-	end
-
-	function WindowConfig:SetTitle(Text)
-		TitleBar.Left.Title.Text = tostring(Text)
-		return self
-	end
-	function WindowConfig:Remove()
-		Window:Remove()
-		return self
-	end
-
-	Toggle.ToggleButton.Activated:Connect(function()
-		local Open = not WindowConfig.Open
-		WindowConfig.Open = Open
-		return WindowConfig:SetOpen(Open)
-	end)	
-
-	function WindowConfig:CreateTab(Config)
-		local Name = Config.Name or ""
-		local TabButton = ToolBar.TabButton:Clone()
-		TabButton.Name = Name
-		TabButton.Text = Name
-		TabButton.Visible = true
-		TabButton.Parent = ToolBar
-		Config.Button = TabButton
-
-		local AutoSizeAxis = WindowConfig.AutoSize or "Y"
-		local Content: Frame = Body.Template:Clone()
-		Content.AutomaticSize = Enum.AutomaticSize[AutoSizeAxis]
-		Content.Visible = Config.Visible or false
-		Content.Name = Name
-		Content.Parent = Body
-		Config.Content = Content
-
-		if AutoSizeAxis == "Y" then
-			Content.Size = UDim2.fromScale(1, 0)
-		elseif AutoSizeAxis == "X" then
-			Content.Size = UDim2.fromScale(0, 1)
-		end
-
-		TabButton.Activated:Connect(function()
-			WindowConfig:ShowTab(Config)
-		end)
-
-		function Config:GetContentSize()
-			return Content.AbsoluteSize
-		end
-
-		--// Apply animations
-		Config = ImGui:ContainerClass(Content, Config, Window)
-		ImGui:ApplyAnimations(TabButton, "Tabs")
-
-		--// Automatic sizes
-		self:UpdateBody()
-		if WindowConfig.AutoSize then
-			Content:GetPropertyChangedSignal("AbsoluteSize"):Connect(function()
-				local Size = Config:GetContentSize()
-				self:SetSize(Size)
-			end)
-		end
-
-		return Config
-	end
-
-	function WindowConfig:SetPosition(Position)
-		Window.Position = Position
-		return self
-	end
-
-	function WindowConfig:SetSize(Size)
-		local HeaderSizeY = self:GetHeaderSizeY()
-
-		if typeof(Size) == "Vector2" then
-			Size = UDim2.fromOffset(Size.X, Size.Y)
-		end
-
-		--// Apply new size
-		local NewSize = UDim2.new(
-			Size.X.Scale,
-			Size.X.Offset,
-			Size.Y.Scale,
-			Size.Y.Offset + HeaderSizeY
-		)
-		self.Size = NewSize
-		Window.Size = NewSize
-
-		return self
-	end
-
-	--// Tab change system 
-	function WindowConfig:ShowTab(TabClass: SharedTable)
-		local TargetPage: Frame = TabClass.Content
-
-		--// Page animation
-		if not TargetPage.Visible and not TabClass.NoAnimation then
-			TargetPage.Position = UDim2.fromOffset(0, 5)
-		end
-
-		--// Hide other tabs
-		for _, Page in next, Body:GetChildren() do
-			Page.Visible = Page == TargetPage
-		end
-
-		--// Page animation
-		ImGui:Tween(TargetPage, {
-			Position = UDim2.fromOffset(0, 0)
-		})
-		return self
-	end
-
-	function WindowConfig:Center() --// Without an Anchor point
-		local Size = Window.AbsoluteSize
-		local Position = UDim2.new(0.5,-Size.X/2,0.5,-Size.Y/2)
-		self:SetPosition(Position)
-		return self
-	end
-
-	--// Load Style Configs
-	WindowConfig:SetTitle(WindowConfig.Title or "Depso UI")
-
-	if not WindowConfig.Open then
-		WindowConfig:SetOpen(WindowConfig.Open or true, true)
-	end
-
-	ImGui.Windows[Window] = WindowConfig
-	ImGui:CheckStyles(Window, WindowConfig, WindowConfig.Colors)
-
-	--// Window section events
-	if not WindowConfig.NoSelectEffect then
-		ImGui:ApplyWindowSelectEffect(Window, TitleBar)
-	end
-
-	return ImGui:MergeMetatables(WindowConfig, Window)
-end
-
-function ImGui:CreateModal(Config)
-	local ModalEffect = Prefabs.ModalEffect:Clone()
-	ModalEffect.BackgroundTransparency = 1
-	ModalEffect.Parent = ImGui.FullScreenGui
-	ModalEffect.Visible = true
-
-	ImGui:Tween(ModalEffect, {
-		BackgroundTransparency = 0.6
+		}
 	})
 
-	--// Config
-	Config = Config or {}
-	Config.TabsBar = Config.TabsBar ~= nil and Config.TabsBar or false
-	Config.NoCollapse = true
-	Config.NoResize = true
-	Config.NoClose = true
-	Config.NoSelectEffect = true
-	Config.Parent = ModalEffect
+	return self
+end
 
-	--// Center
-	Config.AnchorPoint = Vector2.new(0.5, 0.5)
-	Config.Position = UDim2.fromScale(0.5, 0.5)
+type Window = {
+	AutoSize: string?,
+	NoResize: boolean?,
+	CloseCallback: (Window) -> boolean?
+}
+function ImGui:CreateWindow(Config: Window)
+	ImGui:CheckConfig(Config, {
+		Visible = true,
+		AutoSize = false,
+		Parent = self.DefaultParent,
+		MinSize = Vector2.new(160, 90),
+		AddTitleButtons = true,
+	})
 
-	--// Create Window
-	local Window = self:CreateWindow(Config)
-	Config = Window:CreateTab({
-		Visible = true
+	--// Global config unpack
+	local Windows = self.Windows
+	local DefaultTitle = self.DefaultTitle
+
+	--// Unpack config
+	local NoResize = Config.NoResize ~= true
+	local NoCollapse = Config.NoCollapse ~= true
+	local NoTitleBar = Config.NoTitleBar ~= true
+	local TabsBar = Config.TabsBar ~= false
+	local NoClose = Config.NoClose ~= true
+	local Open = Config.Open ~= false
+	local MinSize = Config.MinSize
+	local Colors = Config.Colors
+	local Title = Config.Title or DefaultTitle
+	local AddTitleButtons = Config.AddTitleButtons
+
+	--// Create Window frame
+	local Window: Frame = self:InsertPrefab("Window", Config)
+	local ContentFrame = Window.Content
+	local ResizeGrab = Window.ResizeGrab
+	local TitleBar: Frame = ContentFrame.TitleBar
+	--local Body = Content.Body
+
+	--// Create window class
+	local Class = NewClass(WindowClass)
+	local Elements = {}
+
+	--// Merge tables
+	Merge(Class, Config)
+	Merge(Class, {
+		Elements = Elements,
+		Window = Window,
+		--ToolBar = ToolBar,
+		TitleBar = TitleBar,
+		ResizeGrab = ResizeGrab
+	})
+
+	--// Elements data for coloring
+	Merge(Elements, {
+		[ResizeGrab] = "ResizeGrab",
+		[Window] = "Window",
+		[TitleBar] = "SelectedTitleBar"
 	})
 	
-	--// Disable other windows
-	local WindowManger = ImGui:SetWindowProps({
-		Interactable = false
-	}, {Window.Window})
+	--// Content canvas
+	local Canvas = self:MakeCanvas({
+		Element =  ContentFrame,
+		Window = Class,
+		Class = Class
+	})
 
-	--// Close functions
-	local WindowClose = Window.Close
-	function Config:Close()
-		local Tween = ImGui:Tween(ModalEffect, {
-			BackgroundTransparency = 1
-		})
-		Tween.Completed:Connect(function()
-			ModalEffect:Remove()
-		end)
-		
-		WindowManger:Revert()
-		WindowClose()
+	--// Create default title bar
+	if AddTitleButtons then
+		Class:AddDefaultTitleButtons()
 	end
 
-	return Config
+	Class:SetTitle(Title)
+	Class:SetOpen(Open, true)
+	Class:UpdateColors()
+
+	--// Set element visibilty
+	ResizeGrab.Visible = NoResize
+	TitleBar.Visible = NoTitleBar
+	--ToolBar.Visible = TabsBar
+
+	--// Apply effects
+	ImGui:ApplyResizable({
+		MiniumSize = MinSize,
+		Grab = ResizeGrab,
+		Resize = Window,
+		Check = {
+			Table = Config,
+			Key = "NoResize"
+		},
+		OnUpdate = function(Size)
+			Class:SetSize(Size, true)
+		end,
+	})
+	ImGui:ApplyDraggable({
+		Move = Window,
+		Grab = ContentFrame,
+		Check = {
+			Table = Config,
+			Key = "NoDrag"
+		},
+	})
+	ImGui:ApplyBorderSelectEffect({
+		Window = Window,
+		TitleBar = TitleBar,
+		Colors = Colors,
+		Check = {
+			Table = Config,
+			Key = "NoSelectEffect"
+		},
+	})
+
+	--// Append to Windows array
+	table.insert(Windows, {
+		Window = Window,
+		Class = Class
+	})
+
+	return Canvas--ImGui:MergeMetatables(Config, Window)
 end
 
-local GuiParent = IsStudio and PlayerGui or CoreGui
-ImGui.ScreenGui = ImGui:CreateInstance("ScreenGui", GuiParent, {
-	DisplayOrder = 9999,
-	ResetOnSpawn = false
-})
-ImGui.FullScreenGui = ImGui:CreateInstance("ScreenGui", GuiParent, {
-	DisplayOrder = 99999,
-	ResetOnSpawn = false,
-	ScreenInsets = Enum.ScreenInsets.None
-})
+--// Load the library
+ImGui:Init()
 
 return ImGui
