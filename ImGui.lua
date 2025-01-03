@@ -1,14 +1,14 @@
 --// Written by depso
 --// MIT License
---// Copyright (c) 2024 Depso
 
 local ImGui = {
 	Windows = {},
 	UIAssetId = 76246418997296,
 	DefaultTitle = "ImGui",
 	ScreenGuiName = "ImGui",
+	PrefabsName = "Depso-ImGui-Prefabs",
 
-	IsStudio = false,
+	IsOther = getgenv ~= nil,
 	DefaultParent = nil,
 	PrefabsFolder = nil,
 	
@@ -22,15 +22,18 @@ ImGui.Acent = {
 	Dark = Color3.fromRGB(41, 75, 121),
 	White = Color3.fromRGB(255, 255, 255),
 	Gray = Color3.fromRGB(127, 126, 129),
+	Black = Color3.fromRGB(0, 16, 24),
 }
 
 ImGui.Colors = {
-	WindowBg = Color3.fromRGB(0, 16, 24),
-	Border = Color3.fromRGB(135, 135, 148),
+	WindowBg = ImGui.Acent.Black,
+	Border = ImGui.Acent.Gray,
 	Title = ImGui.Acent.White,
 	ToolBarBg = Color3.fromRGB(36, 36, 36),
-	TabText = Color3.fromRGB(200, 200, 200),
-	TabBg = ImGui.Acent.Light,
+	TabText = ImGui.Acent.Gray,
+	SelectedTabText = ImGui.Acent.White,
+	TabBg = ImGui.Acent.Dark,
+	SelectedTabBg = ImGui.Acent.Light,
 	ResizeGrab = ImGui.Acent.Light,
 
 	--// Elements
@@ -44,7 +47,7 @@ ImGui.Colors = {
 	CheckboxBg = ImGui.Acent.Dark,
 	CheckboxTick = ImGui.Acent.Light,
 
-	DeselectedTitleBarBG = Color3.fromRGB(0, 0, 0),
+	DeselectedTitleBarBG = ImGui.Acent.Black,
 	DeselectedTitleBarTrans = 0.7,
 	SelectedTitleBar = ImGui.Acent.Dark,
 	SelectedTitleBarTrans = 0,
@@ -72,8 +75,16 @@ ImGui.ColoringData = {
 		BackgroundColor3 = "ToolBarBg"
 	},
 	["Tab"] = {
-		TextColor3 = "TabText",
 		BackgroundColor3 = "TabBg"
+	},
+	["SelectedTab"] = {
+		BackgroundColor3 = "SelectedTabBg"
+	},
+	["TabLabel"] = {
+		TextColor3 = "TabText",
+	},
+	["SelectedTabLabel"] = {
+		TextColor3 = "SelectedTabText",
 	},
 	["ResizeGrab"] = {
 		TextColor3 = "ResizeGrab"
@@ -247,11 +258,13 @@ ImGui.Properties = {
 		Aliases = {"Icon", "IconSize"},
 		Callback = function<StyleFunc>(Object, Data, Value)
 			local Icon = Object:FindFirstChild("Icon")
-			if not Icon then return end 
+			if not Icon then return print("No icon for", Object) end 
 			
 			local Class = Data.Class
 			local IconSize = Class.IconSize
 			local Image = Class.Icon
+			
+			Image = ImGui:CheckImageUrl(Image)
 
 			Icon.Visible = Value and true
 			Icon.Image = Image or ""
@@ -346,15 +359,15 @@ ImGui.Properties = {
 --// Compatibility 
 local EmptyFunction = function() end
 local GetHiddenUI = get_hidden_gui or gethui
-local CloneRef = cloneref or function(Ins): Instance 
+local NewReference = cloneref or function(Ins): Instance 
 	return Ins 
 end
 
 --// Service handlers
 local Services = setmetatable({}, {
-	__index = function(self, Name)
+	__index = function(self, Name: string)
 		local Service = game:GetService(Name)
-		return CloneRef(Service)
+		return NewReference(Service)
 	end,
 })
 
@@ -365,15 +378,13 @@ local Players: Players = Services.Players
 local CoreGui = Services.CoreGui
 local UserInputService = Services.UserInputService
 local TweenService = Services.TweenService
+local InsertService = Services.InsertService
 
 --// Local player
 local LocalPlayer = Players.LocalPlayer
-
 ImGui.PlayerGui = LocalPlayer.PlayerGui
-ImGui.IsStudio = ImGui.IsStudio or RunService:IsStudio()
 
 function Merge(Base, New)
-	if not New then return end
 	for Key, Value in next, New do
 		Base[Key] = Value
 	end
@@ -385,8 +396,10 @@ local function NewClass(Base)
 end
 
 function ImGui:Init()
-	self.DefaultParent = self:GetParent()
-	self.PrefabsFolder = self:InsertPrefabs()
+	self:CheckConfig(self, {
+		DefaultParent = self:GetParent(),
+		PrefabsFolder = self:InsertPrefabs()
+	})
 
 	--self.FullScreenGui = ImGui:CreateInstance("ScreenGui", GuiParent, {
 	--	DisplayOrder = 99999,
@@ -406,16 +419,25 @@ type AnimationTween = {
 }
 function Animation:Tween(Data: AnimationTween): Tween
 	local DefaultTweenInfo = self.DefaultTweenInfo
-
+	
+	--// Unpack animation data for the Tween
 	local Object = Data.Object
 	local NoAnimation = Data.NoAnimation
 	local Tweeninfo = Data.Tweeninfo or DefaultTweenInfo
 	local EndProperites = Data.EndProperites
-
+	local StartProperites = Data.StartProperites
+	
+	--// Apply Start Properites to the object
+	if StartProperites then
+		ImGui:SetProperties(Object, StartProperites)
+	end
+	
+	--// Create the tween animation
 	local Sucess, Tween = pcall(function()
 		return TweenService:Create(Object, Tweeninfo, EndProperites)
 	end)
 	
+	--// Error check with a provided data dumb
 	if not Sucess then
 		warn("Tween failed for", Object)
 		warn("Type:", typeof(Object))
@@ -424,6 +446,7 @@ function Animation:Tween(Data: AnimationTween): Tween
 		error(Tween)
 	end
 	
+	--// Play the Tween animation
 	Tween:Play()
 
 	return Tween
@@ -514,9 +537,9 @@ function Animation:HeaderCollapse(Data: HeaderCollapse): Tween
 			[Resize] = {
 				Size = Open and OpenSize or ClosedSize
 			},
-			--[Hide] = {
-			--	Visible = Open,
-			--}
+			[Hide] = {
+				Visible = Open,
+			}
 		}
 	})
 
@@ -526,21 +549,31 @@ function Animation:HeaderCollapse(Data: HeaderCollapse): Tween
 	return Tween
 end
 
+function ImGui:InsertAsset(AssetPath: string): Instance
+	return InsertService:LoadLocalAsset(AssetPath)
+end
+
 function ImGui:InsertPrefabs(): Folder
-	local IsStudio = self.IsStudio
+	local IsOther = self.IsOther
 	local PlayerGui = self.PlayerGui
 	local UIAssetId = self.UIAssetId
-
-	--// Studio | PlayerGui or Script
-	if IsStudio then
-		local Name = "Depso-ImGui-Prefabs"
-		local ScriptUi = script:FindFirstChild(Name)
-		return ScriptUi or PlayerGui:WaitForChild(Name, 10) 
+	local Name = self.PrefabsName
+	local PrefabsFolder = self.PrefabsFolder
+	
+	--// If prefabs are already declared
+	if PrefabsFolder then
+		return PrefabsFolder
 	end
 
 	--// Other | Import asset
-	local AssetPath = `rbxassetid://{UIAssetId}`
-	return self:GetObjects(AssetPath)
+	if IsOther then
+		local AssetPath = `rbxassetid://{UIAssetId}`
+		return self:InsertAsset(AssetPath)
+	end
+
+	--// Studio | PlayerGui or Script
+	local ScriptUi = script:FindFirstChild(Name)
+	return ScriptUi or PlayerGui:WaitForChild(Name, 2)
 end
 
 function ImGui:GetParent(): GuiObject
@@ -596,6 +629,15 @@ function ImGui:CheckConfig(Source, Base)
 	return Source
 end
 
+function ImGui:CheckImageUrl(Url: (string|number)): string
+	--// Convert Id number to asset URL
+	if tonumber(Url) then
+		return `rbxassetid://{Url}`
+	end
+
+	return Url
+end
+
 function ImGui:CreateInstance(Class, Parent, Properties): Instance
 	local Instance = Instance.new(Class, Parent)
 	Merge(Instance, Properties)
@@ -644,8 +686,13 @@ function ImGui:MultiUpdateColors(Config)
 	local Objects = Config.Objects
 	local Animate = Config.Animate
 	local Colors = Config.Colors
+	local Elements = Config.ElementsList
 
-	for Object, Tag in next, Objects do
+	for Object: GuiObject, Tag: string in next, Objects do
+		if Elements then
+			Elements[Object] = Tag
+		end
+		
 		self:UpdateColors({
 			Object = Object,
 			Tag = Tag,
@@ -685,7 +732,7 @@ function ImGui:MergeMetatables(Class, Object: GuiObject)
 	Metadata.__index = function(self, Key: string)
 		--// Fetch value from class
 		local Value = Class[Key]
-		if Value then return Value end
+		if Value ~= nil then return Value end
 
 		--// Fetch value from Object
 		Value = Object[Key]
@@ -701,7 +748,7 @@ function ImGui:MergeMetatables(Class, Object: GuiObject)
 	end
 
 	Metadata.__newindex = function(self, Key: string, Value)
-		local IsClassValue = Class[Key] or typeof(Value) == "function"
+		local IsClassValue = Class[Key] ~= nil or typeof(Value) == "function"
 
 		if IsClassValue then
 			Class[Key] = Value
@@ -815,7 +862,7 @@ function ImGui:WrapCreation(Config: WrapCreation)
 			WindowClass = WindowClass
 		})
 
-		return Class
+		return Class, Element
 	end
 end
 
@@ -932,8 +979,6 @@ end
 function Elements:GetRemainingHeight(): UDim2
 	local Parent = self.Element
 	local Occupied = ImGui:GetContentSize(Parent)
-	
-	print(Occupied)
 
 	return UDim2.new(1, 0, 1, -Occupied.Y)
 end
@@ -960,12 +1005,9 @@ type Image = {
 function Elements:Image(Config: Image): Image
 	local Image = Config.Image or ""
 	Config.ElementStyle = "Button"
+	Config.Image = ImGui:CheckImageUrl(Config.Image)
 	
-	--// Convert Id number to asset URL
-	if tonumber(Image) then
-		Config.Image = `rbxassetid://{Image}`
-	end
-	
+	--// Create image object
 	local Object = ImGui:InsertPrefab("Image", Config)
 	local Class = ImGui:MergeMetatables(Config, Object)
 
@@ -977,10 +1019,10 @@ function Elements:Image(Config: Image): Image
 	return Object
 end
 
-function Elements:ScrollingBox(Config)
+function Elements:ScrollingBox(Config): GuiObject
 	local Object = ImGui:InsertPrefab("ScrollBox", Config)
 	local Class = ImGui:MergeMetatables(Config, Object)
-	return Class
+	return Class, Object
 end
 
 export type Label = {
@@ -989,9 +1031,16 @@ export type Label = {
 	Font: string?
 }
 function Elements:Label(Config: Label): GuiObject
+	ImGui:CheckConfig(Config, {
+		Bold = false,
+		Italic = false,
+		Font = "Inconsolata"
+	})
+	
+	--// Unpack config
 	local IsBold = Config.Bold
 	local IsItalic = Config.Italic
-	local FontName = Config.Font
+	local Name = Config.Font
 
 	--// Weghts
 	local Medium = Enum.FontWeight.Medium
@@ -1003,13 +1052,257 @@ function Elements:Label(Config: Label): GuiObject
 
 	local Weight = IsBold and Bold or Medium
 	local Style = IsItalic and Italic or Normal
-	local Name = FontName or "Inconsolata"
+	
+	Config.FontFace = Font.fromName(Name, Weight, Style)
 
 	--// Create label
-	local Object = ImGui:InsertPrefab("Label", Config)
-	Object.FontFace = Font.fromName(Name, Weight, Style)
+	return ImGui:InsertPrefab("Label", Config)
+end
 
-	return Object
+----// Tabs box class
+local TabsBoxClass = {
+	ColorTags = {
+		BGSelected = {
+			[true] = "SelectedTab",
+			[false] = "Tab"
+		},
+		LabelSelected = {
+			[true] = "SelectedTabLabel",
+			[false] = "TabLabel"
+		},
+	}
+}
+
+function TabsBoxClass:UpdateButton(Tab: table, Selected: boolean)	
+	local TabFrame = Tab.Tab
+	local IsSelected = Tab.IsSelected
+	
+	--// Ignore update if the value is identical
+	if IsSelected == Selected then return end
+	Tab.IsSelected = Selected
+	
+	local NoAnimation = self.NoAnimation
+	local WindowClass = self.Window
+	local ColorTags = self.ColorTags
+	
+	--// Coloring dicts
+	local Colors = WindowClass.Colors
+	local Elements = WindowClass.Elements
+	
+	--// Colors tags
+	local BGSelected = ColorTags.BGSelected
+	local LabelSelected = ColorTags.LabelSelected
+	
+	ImGui:MultiUpdateColors({
+		Animate = not NoAnimation,
+		Colors = Colors,
+		ElementsList = Elements,
+		Objects = {
+			[TabFrame.Background] = BGSelected[Selected],
+			[TabFrame.Button.Label] = LabelSelected[Selected],
+		},
+	})
+end
+
+function TabsBoxClass:ShowTab(Target: (table|string))
+	--// Unpack class data
+	local Tabs = self.Tabs
+	local NoAnimation = self.NoAnimation
+	
+	local MatchName = typeof(Target) == "string"
+	local FoundPage = nil
+	local IsVisible = false
+	
+	--// Hide other tabs
+	for _, Tab in next, Tabs do
+		local Page = Tab.Content
+		local Canvas = Tab.Canvas
+		local Name = Tab.Name
+
+		local Match = false
+		
+		--// Match for requested content type
+		if MatchName then
+			Match = Name == Target
+		else --Match Canvas class
+			Match = Canvas == Target
+		end
+		
+		--// Name matches
+		if Match then
+			IsVisible = Page.Visible
+			FoundPage = Page
+		end
+		
+		--// Set visiblity
+		Page.Visible = Match
+		
+		--// Animate tab buttons
+		self:UpdateButton(Tab, Match)
+	end
+	
+	--// Page animation
+	if NoAnimation then return self end
+	if IsVisible then return self end
+	if not FoundPage then return self end 
+	
+	--// Slide in effect
+	Animation:Tween({
+		Object = FoundPage,
+		NoAnimation = NoAnimation,
+		StartProperites = {
+			Position = UDim2.fromOffset(0, 5)
+		},
+		EndProperites = {
+			Position = UDim2.fromOffset(0, 0)
+		}
+	})
+	
+	return self
+end
+
+export type Tab = {
+	Name: string,
+	AutoSize: string?,
+	TabButton: boolean?,
+	Icon: (string|number)?
+}
+function TabsBoxClass:CreateTab(Config: Tab): Elements
+	ImGui:CheckConfig(Config, {
+		Name = "Tab",
+		AutoSize = "Y"
+	})
+	
+	--// Unpack class data
+	local WindowClass = self.Window
+	local Templates = self.Templates
+	local Toolbar = self.Toolbar
+	local Body = self.Body
+	local Tabs = self.Tabs
+	
+	local Elements = WindowClass.Elements
+
+	--// Unpack config
+	local Name = Config.Name
+	local Icon = Config.Icon
+	local AutoSize = Config.AutoSize
+	local Selected = #Tabs <= 0
+
+	--// Template sources
+	local Page = Templates.Page
+	local TabButton = Templates.TabButton
+	
+	local function Activated()
+		self:ShowTab(Name)
+	end
+
+	--// Create new tab button
+	local Tab = TabButton:Clone()
+	local Button = Tab.Button
+	local Background = Tab.Background
+	local Label = Button.Label
+	
+	Label.Text = tostring(Name)
+	Tab.Parent = Toolbar
+	Tab.Visible = true
+	
+	--// Connect events
+	Button.Activated:Connect(Activated)
+	
+	--// Add color infomation
+	Merge(Elements, {
+		[Background] = "Tab",
+		[Label] = "TabLabel",
+	})
+	
+	--// Apply style
+	ImGui:ApplyStyle(Background, "Tabs")
+	ImGui:ApplyProperties({
+		Object = Button,
+		Class = {
+			Icon = Icon
+		}
+	})
+	
+	--// Create new page
+	local NewPage = Page:Clone()
+	ImGui:SetProperties(NewPage, {
+		Parent = Body,
+		Name = Name,
+		Visible = Selected
+	})
+	
+	--// Apply automatic size
+	ImGui:SetProperties(NewPage, {
+		AutomaticSize = Enum.AutomaticSize[AutoSize],
+		Size = UDim2.fromScale(
+			AutoSize == "Y" and 1 or 0, 
+			AutoSize == "X" and 1 or 0
+		)
+	})
+	
+	--// Content canvas
+	local Canvas = ImGui:MakeCanvas({
+		Element = NewPage,
+		Window = WindowClass,
+		Class = self
+	})
+
+	local Data = {
+		Name = Name,
+		Tab = Tab,
+		Canvas = Canvas,
+		Content = NewPage
+	}
+	
+	--// Add to tabs dict
+	table.insert(Tabs, Data)
+	
+	--// Update UI
+	self:UpdateButton(Data, Selected)
+
+	return Canvas
+end
+
+
+export type TabsBox = {
+	TabsBar: boolean?,
+	NoAnimation: boolean?
+}
+function Elements:TabsBox(Config: TabsBox): (table, GuiObject)
+	local WindowClass = self.WindowClass
+	
+	local TabsBarShown = Config.TabsBar
+	
+	--// Create TabsBox object
+	local Object = ImGui:InsertPrefab("TabsBox", Config)
+	local Class = NewClass(TabsBoxClass)
+	
+	--// Toolbar (TabsBar)
+	local Toolbar = Object.ToolBar
+	local Body = Object.Body
+	local TemplateButton = Toolbar.TemplateButton
+	local PageTemplate = Body.PageTemplate
+	
+	--// Hide/Show elements
+	Toolbar.Visible = TabsBarShown ~= false
+	TemplateButton.Visible = false
+	PageTemplate.Visible = false
+	
+	--// Merge table into class
+	Merge(Class, Config)
+	Merge(Class, {
+		Templates = {
+			TabButton = TemplateButton,
+			Page = PageTemplate
+		},
+		Window = WindowClass,
+		Body = Body,
+		Toolbar = Toolbar,
+		Tabs = {}
+	})
+	
+	return Class, Object
 end
 
 function Elements:RadioButton(Config): GuiObject
@@ -1230,7 +1523,7 @@ function Elements:InputText(Config: InputText): InputText
 		Func(Class, ...)
 	end
 
-	function Config:SetValue(Value)
+	function Config:SetValue(Value: string?)
 		TextBox.Text = tostring(Value)
 		self.Value = Value
 		return Config
@@ -1303,12 +1596,15 @@ function Elements:Console(Config: Console): Console
 	--// Create console object
 	local Object = ImGui:InsertPrefab("Console", Config)
 	local Class = ImGui:MergeMetatables(Config, Object)
-
+	
 	local Source: TextBox = Object.Source
 	local Lines = Object.Lines
 	
+	ImGui:SetProperties(Source, Config)
+	
 	Lines.Visible = LineNumbers
 	Source.TextEditable = not ReadOnly
+	Source.Parent = Object
 
 	--// Expand element size to fill
 	if Fill then
@@ -1327,10 +1623,10 @@ function Elements:Console(Config: Console): Console
 
 		--// Update lines text
 		Lines.Text = ""
+		
 		for Line = 1, LinesCount do
 			local Text = Format:format(Line)
 			local End = Line ~= LinesCount and '\n' or ''
-			
 			Lines.Text ..= `{Text}{End}`
 		end
 		
@@ -1343,15 +1639,16 @@ function Elements:Console(Config: Console): Console
 	
 	function Config:CheckLineCount()
 		--// Configuation
-		local MaxLines = Config.MaxLines
+		local MaxLines = self.MaxLines
 		
 		local Text = Source.Text
 		local Lines = Text:split("\n")
 		
-		--// Cut beginning
+		--// Cut the first line
 		if #Lines > MaxLines then
-			local Cropped = Text:sub(#Lines[1])
-			Source.Text = `{Cropped}\n`
+			local Line = `{Lines[1]}\\n`
+			local Cropped = Text:sub(#Line)
+			self:SetText(Cropped)
 		end
 
 		return self
@@ -1742,7 +2039,8 @@ function Elements:Row(Config: Row): Row
 				Child.Size = UDim2.new(1/Rows, -(Padding+Spacing), YScale, 0)
 			end)
 		end
-		return Config
+		
+		return self
 	end
 	
 	--// Content canvas
@@ -2434,7 +2732,7 @@ end
 function WindowClass:SetOpen(Open: boolean, NoAnimation: false): WindowClass
 	local Window = self.Window
 	local TitleBar = self.TitleBar
-	--local Body = self.Body
+	local Body = self.Body
 	local Toggle = self.Toggle
 	local ResizeGrab = self.ResizeGrab
 	local OpenSize = self.Size
@@ -2455,7 +2753,7 @@ function WindowClass:SetOpen(Open: boolean, NoAnimation: false): WindowClass
 		Toggle = ToggleIcon,
 		Resize = Window,
 		NoAutomaticSize = not AutoSize,
-		--Hide = Body.Real,
+		Hide = Body,
 		--// Sizes
 		ClosedSize = ClosedSize,
 		OpenSize = OpenSize,
@@ -2506,25 +2804,14 @@ function ImGui:CreateWindow(Config: Window)
 	local AddTitleButtons = Config.AddTitleButtons
 
 	--// Create Window frame
-	local Window: Frame = self:InsertPrefab("Window", Config)
+	local Window = self:InsertPrefab("Window", Config)
 	local ContentFrame = Window.Content
 	local ResizeGrab = Window.ResizeGrab
 	local TitleBar: Frame = ContentFrame.TitleBar
-	--local Body = Content.Body
-
+	
 	--// Create window class
 	local Class = NewClass(WindowClass)
 	local Elements = {}
-
-	--// Merge tables
-	Merge(Class, Config)
-	Merge(Class, {
-		Elements = Elements,
-		Window = Window,
-		--ToolBar = ToolBar,
-		TitleBar = TitleBar,
-		ResizeGrab = ResizeGrab
-	})
 
 	--// Elements data for coloring
 	Merge(Elements, {
@@ -2538,6 +2825,21 @@ function ImGui:CreateWindow(Config: Window)
 		Element =  ContentFrame,
 		Window = Class,
 		Class = Class
+	})
+	
+	--// Create TabsBox
+	local TabsBox, Body = Canvas:TabsBox({
+		Size = UDim2.fromScale(1, 1)
+	})
+	
+	--// Merge tables
+	Merge(Class, Config)
+	Merge(Class, {
+		Elements = Elements,
+		Window = Window,
+		Body = Body,
+		TitleBar = TitleBar,
+		ResizeGrab = ResizeGrab
 	})
 
 	--// Create default title bar
@@ -2591,7 +2893,7 @@ function ImGui:CreateWindow(Config: Window)
 		Class = Class
 	})
 
-	return Canvas--ImGui:MergeMetatables(Config, Window)
+	return self:MergeMetatables(Class, TabsBox)
 end
 
 --// Load the library
