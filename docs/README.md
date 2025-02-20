@@ -1,3 +1,8 @@
+# ⚠️ This is discontinued, please use **ReGui** instead!
+# https://github.com/depthso/Dear-ReGui
+
+---
+
 <div align="center">
   <img src="https://github.com/user-attachments/assets/b220b562-519f-4914-afbf-f32ebf56dc5c"/>
 
